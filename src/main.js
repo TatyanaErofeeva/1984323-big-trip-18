@@ -1,7 +1,6 @@
 import SiteMenuView from './view/site-menu-view .js';
 import FilterView from './view/filter-view.js';
 import { render, RenderPosition } from './render.js';
-//import { generatePoint } from './mock/data.js';
 import PointsPresenter from './presenter/points-presenter.js';
 import PointsModel from './model/points-model.js';
 

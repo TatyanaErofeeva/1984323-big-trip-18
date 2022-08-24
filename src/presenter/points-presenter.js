@@ -1,6 +1,6 @@
 import EditFormView from '../view/edit-point-form-view.js';
 import NewPointForm from '../view/create-new-point-form-view.js';
-import LookPointInForm from '../view/look-point-in-form-view.js';
+import PointView from '../view/look-point-in-form-view.js';
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/points-list.js';
 import { render, RenderPosition } from '../render.js';
@@ -17,11 +17,11 @@ export default class PointsPresenter {
     this.routePoints = [...this.pointsModel.getPoints()];
     render (new SortView(), tripEventsContainer, RenderPosition.AFTERBEGIN);
     render (new PointListView(), tripEventsContainer, RenderPosition.BEFOREEND);
-    render (new EditFormView(), tripEventsContainer, RenderPosition.BEFOREEND);
+    render (new EditFormView(this.routePoints[0]), tripEventsContainer, RenderPosition.BEFOREEND);
     render (new NewPointForm(), tripEventsContainer, RenderPosition.BEFOREEND);
 
-    for (let i = 1; i <= 3; i++) {
-      render(new LookPointInForm,tripEventsContainer, RenderPosition.BEFOREEND);
+    for (let i = 0; i <= this.routePoints.length; i++) {
+      render(new PointView(this.routePoints[i]),tripEventsContainer, RenderPosition.BEFOREEND);
     }
   };
 }

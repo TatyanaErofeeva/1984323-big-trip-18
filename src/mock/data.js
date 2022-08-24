@@ -23,15 +23,15 @@ const createPhotosArr = () => {
   return src;
 };
 
-let startDate = dayjs().add(2, 'day').startOf('date');
+let startTripDate = dayjs().add(2, 'day').startOf('date');
 
 const generateDate = () => {
   const MAX_TRIP_TIME = 6;
   const tripTime = getRandomInteger(1, MAX_TRIP_TIME) * 30;
-  const start = startDate;
-  const tripEndTime = startDate.add(tripTime, 'minutes');
-  const finish = tripEndTime;
-  startDate = finish;
+  const start = startTripDate;
+  const finishTripTime = startTripDate.add(tripTime, 'minutes');
+  const finish = finishTripTime;
+  startTripDate = finish;
   return {
     start: Date.parse(start),
     finish: Date.parse(finish)
