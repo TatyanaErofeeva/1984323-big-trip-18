@@ -15,9 +15,6 @@ export default class PointsPresenter {
     this.pointListContainer = pointListContainer;
     this.pointsModel = pointsModel;
     this.routePoints = [...this.pointsModel.getPoints()];
-    console.log(this.routePoints);
-
-    render(this.routeComponent, this.routeContainer);
     render (new SortView(), tripEventsContainer, RenderPosition.AFTERBEGIN);
     render (new PointListView(), tripEventsContainer, RenderPosition.BEFOREEND);
     render (new EditFormView(), tripEventsContainer, RenderPosition.BEFOREEND);

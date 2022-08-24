@@ -49,7 +49,7 @@ const generatePoint = () => {
     type,
     destination,
     offers: offersObjectList,
-    description: getRandomArrayElement(DESCRIPTIONS).slice(0, 5).join(' '),
+    description: getRandomArrayElement(DESCRIPTIONS),
     photos: createPhotosArr(),
     isFavorite: Boolean(getRandomInteger()),
   };

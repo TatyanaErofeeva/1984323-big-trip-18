@@ -13,4 +13,4 @@ const pointsPresenter = new PointsPresenter();
 render (new SiteMenuView(), headerMain, RenderPosition.AFTERBEGIN);
 render (new FilterView(), tripFilterContainer, RenderPosition.AFTERBEGIN);
 
-pointsPresenter.init(headerMain);
+pointsPresenter.init(headerMain, pointsModel);
