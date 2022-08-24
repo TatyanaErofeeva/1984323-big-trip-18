@@ -20,7 +20,7 @@ export default class PointsPresenter {
     render (new EditFormView(this.routePoints[0]), tripEventsContainer, RenderPosition.BEFOREEND);
     render (new NewPointForm(), tripEventsContainer, RenderPosition.BEFOREEND);
 
-    for (let i = 0; i <= this.routePoints.length; i++) {
+    for (let i = 0; i < this.routePoints.length; i++) {
       render(new PointView(this.routePoints[i]),tripEventsContainer, RenderPosition.BEFOREEND);
     }
   };

@@ -19,7 +19,7 @@ const generateOffersList = (arr) => {
               <div class="event__available-offers">`;
     for (let i = 0; i < arr.length; i++) {
       str += `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${arr[i]}-1" type="checkbox" name="event-offer-${arr[i]}" ${getRandomInt() ? 'checked' : ''}>
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${arr[i]}-1" type="checkbox" name="event-offer-${arr[i]}" ${getRandomInteger() ? 'checked' : ''}>
                 <label class="event__offer-label" for="event-offer-${arr[i]}-1">
                   <span class="event__offer-title">${arr[i]['name']}</span>
                   &plus;&euro;&nbsp;
@@ -33,7 +33,7 @@ const generateOffersList = (arr) => {
 };
 
 const createEditTemplate = (point = {}) => {
-  const {times, type, destination, offers, description} = point;
+  const {times, type, destination, offers} = point;
   const {iconSrc, name} = type;
   const {start, finish} = times;
   const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
@@ -131,8 +131,12 @@ const createEditTemplate = (point = {}) => {
   );
 };
 export default class EditFormView {
+  constructor(point) {
+    this.point = point;
+  }
+
   getTemplate() {
-    return createEditTemplate();
+    return createEditTemplate(this.point);
   }
 
   getElement() {
