@@ -21,7 +21,7 @@ export default class PointsPresenter {
     render (new NewPointForm(), tripEventsContainer, RenderPosition.BEFOREEND);
 
     this.routePoints.forEach((element) => {
-      render(new PointView(this.routePoints[element]),tripEventsContainer, RenderPosition.BEFOREEND);
+      render(new PointView(element),tripEventsContainer, RenderPosition.BEFOREEND);
     });
   };
 }
