@@ -21,19 +21,6 @@ const getRandomArray = (count, arr) => {
   return [...newSet];
 };
 
-const generateOffersListForPoint = (offersList) => {
-  let str = '';
-  if (offersList.length > 0) {
-    offersList.forEach((element) => {
-      str += `<li class="event__offer">
-                <span class="event__offer-title">${element.name} &plus;&euro;&nbsp;</span>
-                <span class="event__offer-price">${element.price}</span>
-              </li>`;
-    });
-  }
-  return str;
-};
-
 const addZeroToNumber = (number) => (number < 10) ? `0${number}` : number;
 
 const getDateDiff = (start, finish) => {
@@ -46,4 +33,4 @@ const getDateDiff = (start, finish) => {
   return time;
 };
 
-export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, generateOffersListForPoint};
+export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff};

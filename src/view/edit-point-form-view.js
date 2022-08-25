@@ -1,41 +1,40 @@
 import {createElement} from '../render.js';
-import dayjs from 'dayjs';
-import { DESTINATIONS_ARRAY} from '../mock/const.js';
+import { DESTINATIONS_ARRAY, formatToDateWithTime} from '../mock/const.js';
 import { getRandomInteger } from '../mock/util.js';
 
-const generateDistDatalist = (arr) => {
+const generateDistDatalist = (destinations) => {
   let str = '';
-  for (let i = 0; i < arr.length; i++) {
-    str += `<option value='${arr[i]}'></option>`;
-  }
+  destinations.forEach((element) => {
+    str += `<option value='${destinations[element]}'></option>`;
+  });
   return str;
 };
 
-const generateOffersList = (arr) => {
+const generateOffersList = (events) => {
   let str = '';
-  if (arr.length > 0) {
+  if (events.length > 0) {
     str += `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">`;
-    for (let i = 0; i < arr.length; i++) {
+    events.forEach((element) => {
       str += `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${arr[i]}-1" type="checkbox" name="event-offer-${arr[i]}" ${getRandomInteger() ? 'checked' : ''}>
-                <label class="event__offer-label" for="event-offer-${arr[i]}-1">
-                  <span class="event__offer-title">${arr[i]['name']}</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${arr[i]['price']}</span>
-                </label>
-              </div>`;
-    }
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${events[element]}-1" type="checkbox" name="event-offer-${events[element]}" ${getRandomInteger() ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${events[element]}-1">
+        <span class="event__offer-title">${events['name']}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${events['price']}</span>
+      </label>
+    </div>`;
+    });
     str += '</div></section>';
   }
   return str;
 };
 
 const createEditTemplate = (point = {}) => {
-  const {times, type, destination, offers} = point;
+  const {dates, type, destination, offers} = point;
   const {iconSrc, name} = type;
-  const {start, finish} = times;
+  const {start, finish} = dates;
   const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
 
   return (
@@ -101,10 +100,10 @@ const createEditTemplate = (point = {}) => {
       </div>
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(start).format('DD/MM/YY HH:mm')}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatToDateWithTime(start)}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(finish).format('DD/MM/YY HH:mm')}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatToDateWithTime(finish)}">
       </div>
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-1">

@@ -1,27 +1,40 @@
 import {createElement} from '../render.js';
-import {getDateDiff, generateOffersListForPoint} from '../mock/util.js';
+import {getDateDiff} from '../mock/util.js';
 import dayjs from 'dayjs';
+import { formatToDateMonthsAndDay, formatToFullDate, formatToTime } from '../mock/const.js';
 
+const generateOffersListForPoint = (offersList) => {
+  let str = '';
+  if (offersList.length > 0) {
+    offersList.forEach((element) => {
+      str += `<li class="event__offer">
+                <span class="event__offer-title">${element.name} &plus;&euro;&nbsp;</span>
+                <span class="event__offer-price">${element.price}</span>
+              </li>`;
+    });
+  }
+  return str;
+};
 
 const createNewPointTemplate = (point) => {
-  const {times, type, destination, offers, isFavorite} = point;
+  const {dates, type, destination, offers, isFavorite} = point;
   const {iconSrc, name, price} = type;
-  const {start, finish} = times;
+  const {start, finish} = dates;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
 
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="${dayjs(start).format('YYYY-MM-DD')}">${dayjs(start).format('MMM-DD')}</time>
+        <time class="event__date" datetime="${formatToFullDate(start)}">${formatToDateMonthsAndDay(start)}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="${iconSrc}" alt="Event type icon">
         </div>
         <h3 class="event__title">${name} ${destination}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${dayjs(start)}">${dayjs(start).format('HH:mm')}</time>
+            <time class="event__start-time" datetime="${dayjs(start)}">${formatToTime(start)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${dayjs(finish)}">${dayjs(finish).format('HH:mm')}</time>
+            <time class="event__end-time" datetime="${dayjs(finish)}">${formatToTime(finish)}</time>
           </p>
           <p class="event__duration">${getDateDiff(dayjs(start), dayjs(finish))}</p>
         </div>
