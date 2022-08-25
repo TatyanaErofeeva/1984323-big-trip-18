@@ -1,4 +1,5 @@
 import {getRandomInteger, getRandomArray} from './util.js';
+import dayjs from 'dayjs';
 
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -134,4 +135,8 @@ const DESTINATIONS_ARRAY = [
   'Moscow',
 ];
 
-export {OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, DESCRIPTIONS};
+const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+const formatToTime = (date) => dayjs(date).format('HH:mm');
+const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
+const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
+export {OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay};

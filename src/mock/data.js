@@ -29,30 +29,30 @@ const generateDate = () => {
   const MAX_TRIP_TIME = 6;
   const tripTime = getRandomInteger(1, MAX_TRIP_TIME) * 30;
   const start = startTripDate;
-  const finishTripTime = startTripDate.add(tripTime, 'minutes');
-  const finish = finishTripTime;
+  const finish = startTripDate.add(tripTime, 'minutes');
   startTripDate = finish;
   return {
-    start: Date.parse(start),
-    finish: Date.parse(finish)
+    start:  start.toISOString(),
+    finish: finish.toISOString()
   };
 };
 
-const generatePoint = () => {
+const generatePoint = (_, index) => {
   const destination = getRandomArrayElement(DESTINATIONS_ARRAY);
   const pointType = getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES));
   const type = ROUTE_POINT_TYPES[pointType];
   const offersList = type['offers'];
   const offersObjectList = getObjectsArray(OFFERS_LIST, offersList);
   return {
-    times: generateDate(),
-    type,
+    id: index + 1,
+    basePrice: getRandomInteger(10, 40),
+    dates: generateDate(),
     destination,
+    type,
     offers: offersObjectList,
     description: getRandomArrayElement(DESCRIPTIONS),
     photos: createPhotosArr(),
     isFavorite: Boolean(getRandomInteger()),
   };
 };
-
 export {generatePoint};
