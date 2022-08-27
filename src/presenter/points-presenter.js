@@ -4,6 +4,7 @@ import SortView from '../view/sort-view.js';
 import PointsAndSortsView from '../view/points-and-sorts-container-view.js';
 import EmptyListOfPoints from '../view/no-points-view.js';
 import { render, RenderPosition } from '../render.js';
+import { KEYS } from '../mock/const.js';
 
 const pageMain = document.querySelector('.page-main');
 const tripEventsContainer = pageMain.querySelector('.trip-events');
@@ -29,7 +30,7 @@ export default class PointsPresenter {
 
   #renderPoint = (point) => {
     const pointComponent = new PointView(point);
-    const pointEditComponent = new EditFormView(this.#routePoints[0]);
+    const pointEditComponent = new EditFormView(point);
     const replaceCardToForm = () => {
       tripEventsContainer.replaceChild(pointEditComponent.element, pointComponent.element);
     };
@@ -38,7 +39,7 @@ export default class PointsPresenter {
     };
 
     const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
+      if (evt.key === KEYS.ESCAPE[0] || evt.key === KEYS.ESCAPE[1]) {
         evt.preventDefault();
         replaceFormToCard();
         document.removeEventListener('keydown', onEscKeyDown);

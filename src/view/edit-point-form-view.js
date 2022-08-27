@@ -18,11 +18,11 @@ const generateOffersList = (events) => {
               <div class="event__available-offers">`;
     events.forEach((element) => {
       str += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${events[element]}-1" type="checkbox" name="event-offer-${events[element]}" ${getRandomInteger() ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${events[element]}-1">
-        <span class="event__offer-title">${events['name']}</span>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${element}-1" type="checkbox" name="event-offer-${events[element]}" ${getRandomInteger() ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${element}-1">
+        <span class="event__offer-title">${element['name']}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${events['price']}</span>
+        <span class="event__offer-price">${element['price']}</span>
       </label>
     </div>`;
     });
@@ -32,10 +32,12 @@ const generateOffersList = (events) => {
 };
 
 const createEditTemplate = (point = {}) => {
-  const {dates, type, destination, offers} = point;
-  const {iconSrc, name} = type;
+  const {dates, type, destination, description, offers} = point;
+  const {iconSrc, name, price} = type;
   const {start, finish} = dates;
-  const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
+  //const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
+  const newPointList = DESTINATIONS_ARRAY.reduce((prev, curr) => [...prev, curr.name], [])
+    .filter((element) => element !== destination);
 
   return (
     `<li class="trip-events__item">
@@ -93,7 +95,7 @@ const createEditTemplate = (point = {}) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${name}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
         <datalist id="destination-list-1">
         ${generateDistDatalist(newPointList)}
         </datalist>
@@ -110,7 +112,7 @@ const createEditTemplate = (point = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${getRandomInteger(10, 15) * 5}">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
@@ -122,7 +124,7 @@ const createEditTemplate = (point = {}) => {
     ${generateOffersList(offers)}
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it's renowned for its skiing.</p>
+        <p class="event__destination-description">${description}</p>
       </section>
     </section>
   </form>
