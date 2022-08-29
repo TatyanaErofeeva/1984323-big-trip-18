@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 
-const createFilterTemplate = () => (
+/*const createFilterTemplate = () => (
   `<form class="trip-filters" action="#" method="get">
   <div class="trip-filters__filter">
     <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything">
@@ -19,25 +19,33 @@ const createFilterTemplate = () => (
 
   <button class="visually-hidden" type="submit">Accept filter</button>
 </form>`
-);
+);*/
+const createFilterItemTemplate = (filter) => {
+  const {name} = filter;
+  return (`<div class="trip-filters__filter">
+  <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}">
+  <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
+</div>`);
+};
 
-export default class FilterView {
-  #element = null;
+const createFilterTemplate = (filters)=>{
+  const AllFilters = filters.map((filter) => createFilterItemTemplate(filter)).join('');
+  return ( `<form class="trip-filters" action="#" method="get">
+  ${AllFilters}
+                <button class="visually-hidden" type="submit">Accept filter</button>
+    </form>`
+  );
+};
+
+export default class FilterView extends AbstractView {
+  #filters = null;
+
+  constructor(filters){
+    super();
+    this.#filters = filters;
+  }
 
   get template() {
-    return createFilterTemplate();
+    return createFilterTemplate(this.#filters);
   }
-
-  get element() {
-    if(!this.#element){
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
-
 }

@@ -1,6 +1,18 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 import { DESTINATIONS_ARRAY, formatToDateWithTime} from '../mock/const.js';
 import { getRandomInteger } from '../mock/util.js';
+
+const BLANK_POINT = {
+  id: null,
+  basePrice: null,
+  dates: '',
+  destination:'',
+  type:{},
+  offers: {},
+  description: '',
+  photos: [],
+  isFavorite: false,
+};
 
 const generateDistDatalist = (destinations) => {
   let str = '';
@@ -35,7 +47,6 @@ const createEditTemplate = (point = {}) => {
   const {dates, type, destination, description, offers} = point;
   const {iconSrc, name, price} = type;
   const {start, finish} = dates;
-  //const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
   const newPointList = DESTINATIONS_ARRAY.reduce((prev, curr) => [...prev, curr.name], [])
     .filter((element) => element !== destination);
 
@@ -131,10 +142,10 @@ const createEditTemplate = (point = {}) => {
 </li>`
   );
 };
-export default class EditFormView {
-  #element = null;
+export default class EditFormView extends AbstractView {
   #point = null;
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
+    super();
     this.#point = point;
   }
 
@@ -142,15 +153,23 @@ export default class EditFormView {
     return createEditTemplate(this.#point);
   }
 
-  get element() {
-    if(!this.#element){
-      this.#element = createElement(this.template);
-    }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  };
 
-    return this.#element;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setFormClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClickHandler);
+  };
+
+  #formClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
 }

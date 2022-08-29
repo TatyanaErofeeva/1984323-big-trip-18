@@ -3,30 +3,30 @@ import PointView from '../view/look-point-in-form-view.js';
 import SortView from '../view/sort-view.js';
 import EmptyListOfPoints from '../view/no-points-view.js';
 import PointsListView from '../view/points-list-view.js';
-import { render, RenderPosition } from '../render.js';
+import {render, RenderPosition, replace} from '../framework/render.js';
 import { KEYS } from '../mock/const.js';
 
 const pageMain = document.querySelector('.page-main');
 const tripEventsContainer = pageMain.querySelector('.trip-events');
-export default class BoardPresenter {
-  #boardContainer = null;
+export default class PointsPresenter {
+  #pointsContainer = null;
   #pointsModel = null;
-  #boardPoints = [];
+  #routePoints = [];
   #tripList = new PointsListView();
 
-  init = ( boardContainer, pointsModel ) => {
-    this.#boardContainer = boardContainer;
+  init = ( pointsContainer, pointsModel ) => {
+    this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
-    this.#boardPoints = [...this.#pointsModel.points];
+    this.#routePoints = [...this.#pointsModel.points];
 
-    if ( this.#boardPoints.length === 0 ) {
-      return render( new EmptyListOfPoints(), this.#boardContainer );
+    if ( this.#routePoints.length === 0 ) {
+      return render( new EmptyListOfPoints(), this.#pointsContainer );
     }
 
     render( new SortView(), tripEventsContainer, RenderPosition.AFTERBEGIN );
-    render( this.#tripList, this.#boardContainer );
+    render( this.#tripList, this.#pointsContainer );
 
-    this.#boardPoints.forEach(( point ) => {
+    this.#routePoints.forEach(( point ) => {
       this.#renderPoint( point );
     });
   };
@@ -34,11 +34,13 @@ export default class BoardPresenter {
   #renderPoint = (point) => {
     const pointComponent = new PointView(point);
     const pointEditComponent = new EditFormView(point);
+
     const replaceCardToForm = () => {
-      this.#tripList.element.replaceChild(pointEditComponent.element, pointComponent.element);
+      replace(pointEditComponent, pointComponent);
     };
+
     const replaceFormToCard = () => {
-      this.#tripList.element.replaceChild(pointComponent.element,pointEditComponent.element);
+      replace(pointComponent,pointEditComponent);
     };
 
     const onEscKeyDown = (evt) => {
@@ -49,19 +51,17 @@ export default class BoardPresenter {
       }
     };
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.setEditFormClickHandler(() => {
       replaceCardToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
-      evt.preventDefault();
+    pointEditComponent.setFormSubmitHandler(() => {
       replaceFormToCard();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    pointEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    pointEditComponent.setFormClickHandler(() => {
       replaceFormToCard();
       document.removeEventListener('keydown', onEscKeyDown);
     });

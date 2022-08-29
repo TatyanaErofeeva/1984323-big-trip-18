@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 import {getDateDiff} from '../mock/util.js';
 import dayjs from 'dayjs';
 import { formatToDateMonthsAndDay, formatToFullDate, formatToTime } from '../mock/const.js';
@@ -59,11 +59,11 @@ const createNewPointTemplate = (point) => {
   );
 };
 
-export default class PointView {
-  #element = null;
+export default class PointView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
@@ -71,16 +71,13 @@ export default class PointView {
     return createNewPointTemplate(this.#point);
   }
 
-  get element() {
-    if(!this.#element){
-      this.#element = createElement(this.template);
-    }
+  setEditFormClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editFormClickHandler);
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
-
+  #editFormClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }
