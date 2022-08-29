@@ -139,8 +139,14 @@ const DESTINATIONS_ARRAY = [
   'Moscow',
 ];
 
+const FILTER_TYPE = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past'
+};
+
 const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
-export {KEYS,OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay};
+export {KEYS,OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay};

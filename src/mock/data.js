@@ -1,6 +1,8 @@
 import {getRandomInteger, getRandomArrayElement} from './util.js';
 import { DESTINATIONS_ARRAY, DESCRIPTIONS, OFFERS_LIST, ROUTE_POINT_TYPES } from './const.js';
+import { FILTER_TYPE } from './const.js';
 import dayjs from 'dayjs';
+import { isFutureDate, isPastDate } from './util.js';
 
 const getObjectsArray = (obj, keysArr) => {
   const newArray = [];
@@ -37,6 +39,12 @@ const generateDate = () => {
   };
 };
 
+const filter = {
+  [FILTER_TYPE.EVERYTHING]: (points) => points.slice(),
+  [FILTER_TYPE.FUTURE]: (points) => points.filter((point) => isFutureDate(point.dateFrom, point.dateFrom)),
+  [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dateTo)),
+};
+
 const generatePoint = (_, index) => {
   const destination = getRandomArrayElement(DESTINATIONS_ARRAY);
   const pointType = getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES));
@@ -55,4 +63,4 @@ const generatePoint = (_, index) => {
     isFavorite: Boolean(getRandomInteger()),
   };
 };
-export {generatePoint};
+export {generatePoint, filter};

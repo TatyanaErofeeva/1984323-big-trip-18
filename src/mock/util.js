@@ -23,6 +23,10 @@ const getRandomArray = (count, arr) => {
 
 const addZeroToNumber = (number) => (number < 10) ? `0${number}` : number;
 
+const isFutureDate = (dateFrom, dateTo) => dayjs().isBefore(dayjs(dateFrom)) || dayjs().isSame(dayjs(dateFrom)) || dayjs().isBefore(dayjs(dateTo));
+
+const isPastDate = (date) => dayjs().isAfter(dayjs(date));
+
 const getDateDiff = (start, finish) => {
   const diffTimeInMs = finish.diff(start);
   const timeDuration = dayjs.duration(diffTimeInMs);
@@ -33,4 +37,4 @@ const getDateDiff = (start, finish) => {
   return time;
 };
 
-export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff};
+export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate};
