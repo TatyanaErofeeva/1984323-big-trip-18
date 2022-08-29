@@ -1,9 +1,18 @@
 import AbstractView from '../framework/view/abstract-view';
 import { DESTINATIONS_ARRAY, formatToDateWithTime} from '../mock/const.js';
-import { generatePoint } from '../mock/data';
 import { getRandomInteger } from '../mock/util.js';
 
-const BLANK_POINT = generatePoint;
+const BLANK_POINT = {
+  id: null,
+  basePrice: null,
+  dates: '',
+  destination:'',
+  type:{},
+  offers: {},
+  description: '',
+  photos: [],
+  isFavorite: false,
+};
 
 const generateDistDatalist = (destinations) => {
   let str = '';

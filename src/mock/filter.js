@@ -1,9 +1,8 @@
 import { filter } from './data.js';
 
-const generateFilter = (points) => Object.entries(filter).map(
-  ([filterName, filterPoint]) => ({
+const generateFilter = () => Object.keys(filter).map(
+  (filterName) => ({
     name: filterName,
-    count: filterPoint(points),
   }),
 );
 export {generateFilter};
