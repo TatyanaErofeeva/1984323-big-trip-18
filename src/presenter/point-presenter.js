@@ -8,6 +8,8 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+const isEscKey = (evt) => evt.key === KEYS.ESCAPE[0] || KEYS.ESCAPE[1] ;
+
 export default class PointPresenter {
   #pointListContainer = null;
   #changeData = null;
@@ -80,11 +82,18 @@ export default class PointPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === KEYS.ESCAPE[0] || evt.key === KEYS.ESCAPE[1]) {
+    if (KEYS.ESCAPE.includes(isEscKey(evt))){
       evt.preventDefault();
       this.#replaceFormToCard();
     }
   };
+
+  /*#escKeyDownHandler = (evt) => {
+    if (evt.key === KEYS.ESCAPE[0] || evt.key === KEYS.ESCAPE[1]) {
+      evt.preventDefault();
+      this.#replaceFormToCard();
+    }
+  };*/
 
   #editFormClickHandler = () => {
     this.#replaceCardToForm();
