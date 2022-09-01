@@ -16,12 +16,15 @@ const getWeightForNull = (dateA, dateB ) => {
   return null;
 };
 
-export const sortByDay = ( dateA, dateB ) => dayjs( dateA.dates ).diff( dateB.dates);
+export const sortByDay = (pointA, pointB ) => {
+  const dayADuration = pointA.dates.start;
+  const dayBDuration = pointB.dates.start;
+  return dayjs(dayADuration).diff(dayBDuration);};
 
 export const sortByTime = (timeA, timeB) => {
   const timeADuration = dayjs(timeA.dates.finish).diff(dayjs(timeA.dates.start));
   const timeBDuration = dayjs(timeB.dates.finish).diff(dayjs(timeB.dates.start));
-  return timeADuration - timeBDuration;
+  return timeBDuration - timeADuration;
 };
 
 export const sortByPrice = (pointA, pointB) => {
@@ -29,7 +32,7 @@ export const sortByPrice = (pointA, pointB) => {
   pointB = pointB.type.price;
   const weight = getWeightForNull(pointA, pointB);
 
-  return weight ?? (pointA - pointB);
+  return weight ?? (pointB - pointA);
 };
 
 

@@ -31,7 +31,7 @@ const generateDate = () => {
   const MAX_TRIP_TIME = 6;
   const tripTime = getRandomInteger(1, MAX_TRIP_TIME) * 30;
   const start = startTripDate;
-  const finish = startTripDate.add(tripTime, 'minutes');
+  const finish = startTripDate.add(tripTime, 'days');
   startTripDate = finish;
   return {
     start:  start.toISOString(),
