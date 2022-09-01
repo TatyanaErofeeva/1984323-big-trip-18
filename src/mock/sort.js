@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-const getDuration = (start, finish) => dayjs(finish).diff(dayjs(start));
 
 const getWeightForNull = (dateA, dateB ) => {
   if (dateA === null && dateB === null) {
@@ -17,27 +16,20 @@ const getWeightForNull = (dateA, dateB ) => {
   return null;
 };
 
-export const sortByDay = (pointA, pointB) => {
-  pointA = pointA.dateFrom;
-  pointB = pointB.dateFrom;
-  const weight = getWeightForNull(pointA, pointB);
+export const sortByDay = ( dateA, dateB ) => dayjs( dateA.dates ).diff( dateB.dates);
 
-  return weight ?? getDuration(pointA, pointB);
-};
-
-export const sortByTime = (pointA, pointB) => {
-  pointA = getDuration(pointA.dateFrom, pointA.dateTo);
-  pointB = getDuration(pointB.dateFrom, pointB.dateTo);
-  const weight = getWeightForNull(pointA, pointB);
-
-  return weight ?? (pointB - pointA);
+export const sortByTime = (timeA, timeB) => {
+  const timeADuration = dayjs(timeA.dates.finish).diff(dayjs(timeA.dates.start));
+  const timeBDuration = dayjs(timeB.dates.finish).diff(dayjs(timeB.dates.start));
+  return timeADuration - timeBDuration;
 };
 
 export const sortByPrice = (pointA, pointB) => {
-  pointA = pointA.basePrice;
-  pointB = pointB.basePrice;
+  pointA = pointA.type.price;
+  pointB = pointB.type.price;
   const weight = getWeightForNull(pointA, pointB);
 
-  return weight ?? (pointB - pointA);
+  return weight ?? (pointA - pointB);
 };
+
 

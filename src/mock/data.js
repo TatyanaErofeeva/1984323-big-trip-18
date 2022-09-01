@@ -25,7 +25,7 @@ const createPhotosArr = () => {
   return src;
 };
 
-let startTripDate = dayjs().add(2, 'day').startOf('date');
+let startTripDate = dayjs().add(0, 'day').startOf('date');
 
 const generateDate = () => {
   const MAX_TRIP_TIME = 6;

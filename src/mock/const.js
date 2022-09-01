@@ -145,14 +145,16 @@ const FILTER_TYPE = {
   PAST: 'past'
 };
 
-const SortType = {
-  DAY: 'day',
-  TIME: 'time',
-  PRICE: 'price',
-};
+const SortData = [
+  { id: 'day', name: 'Day', checked: true, disabled: false },
+  { id: 'event', name: 'Event', checked: false, disabled: true },
+  { id: 'time', name: 'Time', checked: false, disabled: false },
+  { id: 'price', name: 'Price', checked: false, disabled: false },
+  { id: 'offer', name: 'Offers', checked: false, disabled: true },
+];
 
 const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
-export {KEYS,OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortType};
+export {KEYS,OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortData};
