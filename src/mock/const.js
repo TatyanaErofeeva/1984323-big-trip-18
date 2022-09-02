@@ -145,8 +145,24 @@ const FILTER_TYPE = {
   PAST: 'past'
 };
 
+const SortType = {
+  DAY: 'sort-day',
+  TIME: 'sort-time',
+  PRICE: 'sort-price',
+  EVENT: 'sort-event',
+  OFFER: 'sort-offer'
+};
+
+const SortData = [
+  { item: 'day', id: SortType.DAY, name: 'Day', checked: true, disabled: false },
+  { item: 'event', id: SortType.EVENT, name: 'Event', checked: false, disabled: true },
+  { item: 'time', id: SortType.TIME, name: 'Time', checked: false, disabled: false },
+  { item: 'price', id: SortType.PRICE, name: 'Price', checked: false, disabled: false },
+  { item: 'offer', id: SortType.OFFER, name: 'Offers', checked: false, disabled: true },
+];
+
 const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
-export {KEYS,OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay};
+export {KEYS,OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortData, SortType};

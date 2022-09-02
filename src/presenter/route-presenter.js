@@ -4,6 +4,9 @@ import PointsListView from '../view/points-list-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem } from '../mock/util.js';
+import { sortByPrice, sortByTime, sortByDay } from '../mock/sort.js';
+import { SortData } from '../mock/const.js';
+import { SortType } from '../mock/const.js';
 
 const pageMain = document.querySelector('.page-main');
 const tripEventsContainer = pageMain.querySelector('.trip-events');
@@ -14,13 +17,15 @@ export default class RoutePresenter {
   #routePoints = [];
   #pointPresenter = new Map();
   #tripList = new PointsListView();
-  #sortComponent = new SortView();
+  #sortComponent = new SortView(SortData);
   #noPointComponent = new EmptyListOfPoints;
+  #currentSortType = SortData[0];
 
   init = ( pointsContainer, pointsModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
     this.#routePoints = [...this.#pointsModel.points];
+
     this.#renderRoute();
   };
 
@@ -33,8 +38,21 @@ export default class RoutePresenter {
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    // - Очищаем список
+    // - Рендерим список заново
+    this.#clearPointList();
+    this.#renderPoints();
+  };
+
   #renderSort = () => {
     render( this.#sortComponent, tripEventsContainer, RenderPosition.AFTERBEGIN );
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #renderPoint = (point) => {
@@ -46,6 +64,22 @@ export default class RoutePresenter {
   #clearPointList = () => {
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
+  };
+
+  #sortPoints = (sortType) => {
+    if ( sortType === SortType.TIME ) {
+      return this.#routePoints.sort(sortByTime);
+    }
+
+    if ( sortType === SortType.DAY ) {
+      return this.#routePoints.sort(sortByDay);
+    }
+
+    if ( sortType === SortType.PRICE ) {
+      return this.#routePoints.sort(sortByPrice);
+    }
+
+    this.#currentSortType = sortType;
   };
 
   #renderPoints = () =>{

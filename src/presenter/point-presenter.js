@@ -88,13 +88,6 @@ export default class PointPresenter {
     }
   };
 
-  /*#escKeyDownHandler = (evt) => {
-    if (evt.key === KEYS.ESCAPE[0] || evt.key === KEYS.ESCAPE[1]) {
-      evt.preventDefault();
-      this.#replaceFormToCard();
-    }
-  };*/
-
   #editFormClickHandler = () => {
     this.#replaceCardToForm();
   };
