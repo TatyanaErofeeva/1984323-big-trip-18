@@ -161,8 +161,6 @@ const SortData = [
   { item: 'offer', id: SortType.OFFER, name: 'Offers', checked: false, disabled: true },
 ];
 
-
-
 const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
