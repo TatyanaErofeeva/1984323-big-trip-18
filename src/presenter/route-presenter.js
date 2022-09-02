@@ -6,6 +6,7 @@ import PointPresenter from './point-presenter.js';
 import { updateItem } from '../mock/util.js';
 import { sortByPrice, sortByTime, sortByDay } from '../mock/sort.js';
 import { SortData } from '../mock/const.js';
+import { SortType } from '../mock/const.js';
 
 const pageMain = document.querySelector('.page-main');
 const tripEventsContainer = pageMain.querySelector('.trip-events');
@@ -18,13 +19,12 @@ export default class RoutePresenter {
   #tripList = new PointsListView();
   #sortComponent = new SortView(SortData);
   #noPointComponent = new EmptyListOfPoints;
-  #sourcedPointsList = [];
+  #currentSortType = SortData[0];
 
   init = ( pointsContainer, pointsModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
     this.#routePoints = [...this.#pointsModel.points];
-    this.#sourcedPointsList = [...this.#pointsModel.points].sort(sortByDay);
 
     this.#renderRoute();
   };
@@ -35,11 +35,14 @@ export default class RoutePresenter {
 
   #handlePointChange = (updatedPoint) => {
     this.#routePoints = updateItem(this.#routePoints, updatedPoint);
-    this.#sourcedPointsList = updateItem(this.#sourcedPointsList, updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
   #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
     this.#sortPoints(sortType);
     // - Очищаем список
     // - Рендерим список заново
@@ -64,19 +67,19 @@ export default class RoutePresenter {
   };
 
   #sortPoints = (sortType) => {
-    if ( sortType === 'sort-time' ) {
+    if ( sortType === SortType.TIME ) {
       return this.#routePoints.sort(sortByTime);
     }
 
-    if ( sortType === 'sort-day' ) {
+    if ( sortType === SortType.DAY ) {
       return this.#routePoints.sort(sortByDay);
     }
 
-    if ( sortType === 'sort-price' ) {
+    if ( sortType === SortType.PRICE ) {
       return this.#routePoints.sort(sortByPrice);
     }
 
-    //this.#currentSortType = sortType;
+    this.#currentSortType = sortType;
   };
 
   #renderPoints = () =>{

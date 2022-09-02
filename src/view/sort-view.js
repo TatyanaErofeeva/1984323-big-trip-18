@@ -1,9 +1,9 @@
 import AbstractView from '../framework/view/abstract-view';
 
-const createSortTemplate = ({ id, name, checked, disabled }) => (
-  `<div class="trip-sort__item  trip-sort__item--${ id }">
-  <input id="sort-${ id }" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${ id }" ${ checked ? 'checked' : '' } ${ disabled ? 'disabled' : '' } >
-  <label class="trip-sort__btn" for="sort-${ id }">${ name }</label>
+const createSortTemplate = ({ item, id, name, checked, disabled }) => (
+  `<div class="trip-sort__item  trip-sort__item--${ item }">
+  <input id="${ id }" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${ id }" ${ checked ? 'checked' : '' } ${ disabled ? 'disabled' : '' } >
+  <label class="trip-sort__btn" for="${ id }">${ name }</label>
 </div>`
 );
 
@@ -24,13 +24,13 @@ export default class SortView extends AbstractView {
 
   setSortTypeChangeHandler = (callback) => {
     this._callback.sortTypeChange = callback;
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+    this.element.addEventListener('change', this.#sortTypeChangeHandler);
   };
 
 
   #sortTypeChangeHandler = ( evt ) => {
     if ( evt.target.classList.contains('trip-sort__input') ) {
-      this._callback.sortTypeChange(evt.target.id);
+      this._callback.sortTypeChange(evt.target.value);
     }
   };
 
