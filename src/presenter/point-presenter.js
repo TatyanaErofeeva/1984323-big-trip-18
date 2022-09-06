@@ -8,7 +8,7 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-const isEscKey = (evt) => evt.key === KEYS.ESCAPE[0] || KEYS.ESCAPE[1] ;
+const isEscKey = (evt) => evt.key === KEYS.ESCAPE[0] || evt.key === KEYS.ESCAPE[1];
 
 export default class PointPresenter {
   #pointListContainer = null;
@@ -64,6 +64,7 @@ export default class PointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
   };
@@ -76,14 +77,16 @@ export default class PointPresenter {
   };
 
   #replaceFormToCard = () => {
+    //this.#pointEditComponent.reset(this.#point);
     replace(this.#pointComponent,this.#pointEditComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
   };
 
   #escKeyDownHandler = (evt) => {
-    if (KEYS.ESCAPE.includes(isEscKey(evt))){
+    if (isEscKey(evt)){
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
   };
@@ -93,6 +96,7 @@ export default class PointPresenter {
   };
 
   #formClickHandler = () => {
+    this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToCard();
   };
 

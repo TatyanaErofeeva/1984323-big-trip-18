@@ -1,6 +1,6 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { DESTINATIONS_ARRAY, formatToDateWithTime} from '../mock/const.js';
-import { getRandomInteger } from '../mock/util.js';
+import { getRandomInteger, getNumberFromString} from '../mock/util.js';
 
 const BLANK_POINT = {
   id: null,
@@ -14,13 +14,8 @@ const BLANK_POINT = {
   isFavorite: false,
 };
 
-const generateDistDatalist = (destinations) => {
-  let str = '';
-  destinations.forEach((element) => {
-    str += `<option value='${destinations[element]}'></option>`;
-  });
-  return str;
-};
+const destinationName = () => DESTINATIONS_ARRAY.map((element) => `<option value='${element}'></option>`).join('');
+const destinationList = destinationName();
 
 const generateOffersList = (events) => {
   let str = '';
@@ -43,13 +38,10 @@ const generateOffersList = (events) => {
   return str;
 };
 
-const createEditTemplate = (point = {}) => {
-  const {dates, type, destination, description, offers} = point;
+const createEditTemplate = (_state = {}) => {
+  const {dates, type, destination, description, offers} = _state;
   const {iconSrc, name, price} = type;
   const {start, finish} = dates;
-  const newPointList = DESTINATIONS_ARRAY.reduce((prev, curr) => [...prev, curr.name], [])
-    .filter((element) => element !== destination);
-
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -108,7 +100,7 @@ const createEditTemplate = (point = {}) => {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
         <datalist id="destination-list-1">
-        ${generateDistDatalist(newPointList)}
+        ${destinationList}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
@@ -123,7 +115,7 @@ const createEditTemplate = (point = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
@@ -142,15 +134,16 @@ const createEditTemplate = (point = {}) => {
 </li>`
   );
 };
-export default class EditFormView extends AbstractView {
-  #point = null;
+export default class EditFormView extends AbstractStatefulView {
   constructor(point = BLANK_POINT) {
     super();
-    this.#point = point;
+    this._state = EditFormView.parsePointToState(point);
+
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createEditTemplate(this.#point);
+    return createEditTemplate(this._state);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -160,7 +153,7 @@ export default class EditFormView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(EditFormView.parseStateToPoint(this._state));
   };
 
   setFormClickHandler = (callback) => {
@@ -171,5 +164,68 @@ export default class EditFormView extends AbstractView {
   #formClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypePoint );
+    this.element.querySelector('.event__available-offers').addEventListener('click', this.#changeOffer );
+    this.element.querySelector('#event-destination-1').addEventListener( 'change', this.#changeDestination );
+    this.element.querySelector('#event-price-1').addEventListener( 'input', this.#changePrice );
+  };
+
+  #changeTypePoint = ( evt ) => {
+    evt.preventDefault();
+    if (evt.target.classList.contains('event__type-input')) {
+      this.updateElement({
+        type: evt.target.value,
+        offers: [],
+      });
+    }
+  };
+
+  #changeOffer = ( evt ) => {
+    evt.preventDefault();
+    if (evt.target.classList.contains('event__offer-checkbox')) {
+      const isTrue = this._state.offers.includes(getNumberFromString(evt.target.id));
+      const numberId = getNumberFromString( evt.target.id );
+
+      this._setState({
+        offers: !isTrue ? [...this._state.offers, numberId] : this._state.offers.filter(( item ) => item !== numberId ),
+      });
+    }
+  };
+
+  #changeDestination = ( evt ) => {
+    evt.preventDefault();
+    this.updateElement({
+      destination: evt.target.value,
+    });
+  };
+
+  #changePrice = ( evt ) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: evt.target.value,
+    });
+  };
+
+  reset = ( point ) => {
+    this.updateElement(
+      EditFormView.parsePointToState( point ),
+    );
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormClickHandler(this._callback.click);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  };
+
+  static parsePointToState = (point) => ({ ...point });
+
+  static parseStateToPoint = (state) => {
+    const point = { ...state };
+
+    return point;
   };
 }
