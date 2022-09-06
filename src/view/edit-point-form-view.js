@@ -186,8 +186,6 @@ export default class EditFormView extends AbstractStatefulView {
     if (evt.target.classList.contains('event__offer-checkbox')) {
       const isTrue = this._state.offers.includes(getNumberFromString(evt.target.id));
       const numberId = getNumberFromString( evt.target.id );
-      console.log(numberId);
-
       this._setState({
         offers: !isTrue ? [...this._state.offers, numberId] : this._state.offers.filter(( item ) => item !== numberId ),
       });
