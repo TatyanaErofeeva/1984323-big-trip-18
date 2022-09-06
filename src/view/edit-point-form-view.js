@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { DESTINATIONS_ARRAY, formatToDateWithTime, ROUTE_POINT_TYPES, OFFERS_LIST} from '../mock/const.js';
+import { DESTINATIONS_ARRAY, formatToDateWithTime, ROUTE_POINT_TYPES} from '../mock/const.js';
 import { getRandomInteger, getNumberFromString} from '../mock/util.js';
-import { getObjectsArray } from '../mock/data.js';
+//import { getObjectsArray } from '../mock/data.js';
 
 const BLANK_POINT = {
   id: null,
@@ -15,8 +15,13 @@ const BLANK_POINT = {
   isFavorite: false,
 };
 
-const destinationName = () => DESTINATIONS_ARRAY.map((element) => `<option value='${element}'></option>`).join('');
-const destinationList = destinationName();
+const generateDistDatalist = (destinations) => {
+  let str = '';
+  destinations.forEach((element) => {
+    str += `<option value='${element}'></option>`;
+  });
+  return str;
+};
 
 const generateOffersList = (events) => {
   let str = '';
@@ -85,6 +90,7 @@ const createEditTemplate = (_state = {}) => {
   const {id, dates, type, destination, description, offers, photos} = _state;
   const {iconSrc, name, price} = type;
   const {start, finish} = dates;
+  const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
 
   return (
     `<li class="trip-events__item">
@@ -98,7 +104,7 @@ const createEditTemplate = (_state = {}) => {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination}" list="destination-list-${id}">
         <datalist id="destination-list-${id}">
-        ${destinationList}
+        ${generateDistDatalist(newPointList)}
         </datalist>
       </div>
       ${generateTimeData(start, finish, id)}
