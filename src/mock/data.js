@@ -63,4 +63,4 @@ const generatePoint = () => {
     isFavorite: Boolean(getRandomInteger()),
   };
 };
-export {generatePoint, filter};
+export {generatePoint, filter, getObjectsArray};

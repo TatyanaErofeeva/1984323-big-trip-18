@@ -52,6 +52,6 @@ const updateItem = (items, update) => {
   ];
 };
 
-const getNumberFromString = ( str ) => Number( str.split('').filter((item) => Number(item)).join('') );
+const getNumberFromString = (str) => Number(str.split('').filter((item) => Number(item)).join(''));
 
 export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, updateItem, getNumberFromString};
