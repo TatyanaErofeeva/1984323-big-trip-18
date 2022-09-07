@@ -1,14 +1,13 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { DESTINATIONS_ARRAY, formatToDateWithTime, ROUTE_POINT_TYPES} from '../mock/const.js';
 import { getRandomInteger, getNumberFromString} from '../mock/util.js';
-//import { getObjectsArray } from '../mock/data.js';
 
 const BLANK_POINT = {
   id: null,
   basePrice: null,
   dates: '',
   destination:'',
-  type:{},
+  type:'',
   offers: [],
   description: '',
   photos: [],
@@ -171,10 +170,10 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypePoint );
-    this.element.querySelector('.event__available-offers').addEventListener('click', this.#changeOffer );
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTypePoint );
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#changeOffer );
     this.element.querySelector('.event__input--destination').addEventListener( 'change', this.#changeDestination );
-    //this.element.querySelector('.event__input--price').addEventListener( 'input', this.#changePrice );
+    this.element.querySelector('.event__input--price').addEventListener( 'input', this.#changePrice );
   };
 
   #changeTypePoint = ( evt ) => {
@@ -182,13 +181,13 @@ export default class EditFormView extends AbstractStatefulView {
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
         type: ROUTE_POINT_TYPES[evt.target.value],
-        //offers: getObjectsArray(OFFERS_LIST, ROUTE_POINT_TYPES[evt.target.value]['offer']),
+        offers: [],
       });
     }
   };
 
-  #changeOffer = ( evt ) => {
-    //evt.preventDefault();
+  #changeOffer = (evt) => {
+    evt.preventDefault();
     if (evt.target.classList.contains('event__offer-checkbox')) {
       const isTrue = this._state.offers.includes(getNumberFromString(evt.target.id));
       const numberId = getNumberFromString( evt.target.id );
@@ -198,23 +197,23 @@ export default class EditFormView extends AbstractStatefulView {
     }
   };
 
-  #changeDestination = ( evt ) => {
+  #changeDestination = (evt) => {
     evt.preventDefault();
     this.updateElement({
       destination: evt.target.value,
     });
   };
 
-  /*#changePrice = ( evt ) => {
+  #changePrice = (evt) => {
     evt.preventDefault();
     this._setState({
       basePrice: evt.target.value,
     });
-  };*/
+  };
 
-  reset = ( point ) => {
+  reset = (point) => {
     this.updateElement(
-      EditFormView.parsePointToState( point ),
+      EditFormView.parsePointToState(point),
     );
   };
 
