@@ -8,8 +8,7 @@ const generateOffersListForPoint = (offersList) => {
   if (offersList.length > 0) {
     offersList.forEach((element) => {
       str += `<li class="event__offer">
-                <span class="event__offer-title">${element.name} &plus;&euro;&nbsp;</span>
-                <span class="event__offer-price">${element.price}</span>
+                <span class="event__offer-title">${element} &plus;&euro;&nbsp;</span>
               </li>`;
     });
   }

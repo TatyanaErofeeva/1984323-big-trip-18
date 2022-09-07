@@ -1,5 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { DESTINATIONS_ARRAY, formatToDateWithTime, ROUTE_POINT_TYPES} from '../mock/const.js';
+import { DESTINATIONS_ARRAY, formatToDateWithTime} from '../mock/const.js';
+import { ROUTE_POINT_TYPES } from '../mock/data.js';
 import { getRandomInteger, getNumberFromString} from '../mock/util.js';
 
 const BLANK_POINT = {
@@ -86,8 +87,8 @@ const generatePhoto = (photosList) => {
 };
 
 const createEditTemplate = (_state = {}) => {
-  const {id, dates, type, destination, description, offers, photos} = _state;
-  const {iconSrc, name, price} = type;
+  const {id, dates, type, destination, description, photos} = _state;
+  const {iconSrc, name, price, offers} = type;
   const {start, finish} = dates;
   const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
 
@@ -181,7 +182,7 @@ export default class EditFormView extends AbstractStatefulView {
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
         type: ROUTE_POINT_TYPES[evt.target.value],
-        offers: [],
+        //offers: [],
       });
     }
   };
