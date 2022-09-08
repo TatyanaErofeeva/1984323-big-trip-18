@@ -1,5 +1,5 @@
 import {getRandomInteger, getRandomArrayElement, getRandomArray} from './util.js';
-import { FILTER_TYPE, OFFERS_LIST } from './const.js';
+import { FILTER_TYPE, OFFERS_LIST, pictures, DESCRIPTIONS, DESTINATIONS_ARRAY } from './const.js';
 import dayjs from 'dayjs';
 import { isFutureDate, isPastDate } from './util.js';
 import { nanoid } from 'nanoid';
@@ -94,10 +94,17 @@ const ROUTE_POINT_TYPES = {
     price: getRandomInteger(2, 20) * 20,
   },
 };
+const createPhotosArr = () => {
+  const count = getRandomInteger(1, 7);
+  const src = [];
+  for (let i = 0; i < count; i++) {
+    src.push(pictures[i]);
+  }
+  return src;
+};
 
-let id = 0;
 const generatePoint = () => {
-  //const destination = getRandomArrayElement(DESTINATIONS_ARRAY);
+  const destination = getRandomArrayElement(DESTINATIONS_ARRAY);
   const pointType = getRandomArrayElement(typePoints);
   const type = ROUTE_POINT_TYPES[pointType];
   const offersList = type['offers'];
@@ -106,11 +113,11 @@ const generatePoint = () => {
     id: nanoid(),
     basePrice: getRandomInteger(10, 40),
     dates: generateDate(),
-    destination: id++,
+    destination,
     type,
     offers: typeOfStringOffers,
-    //description: getRandomArrayElement(DESCRIPTIONS),
-    //photos: createPhotosArr(),
+    description: getRandomArrayElement(DESCRIPTIONS),
+    photos: createPhotosArr(),
     isFavorite: Boolean(getRandomInteger()),
   };
 };
