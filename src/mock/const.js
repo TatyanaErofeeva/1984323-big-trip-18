@@ -105,8 +105,20 @@ const SortData = [
   { item: 'offer', id: SortType.OFFER, name: 'Offers', checked: false, disabled: true },
 ];
 
+const pictures = [
+  'https://placekitten.com/g/247/153',
+  'https://placekitten.com/g/249/151',
+  'https://placekitten.com/g/250/152',
+  'https://placekitten.com/g/247/153',
+  'https://placekitten.com/g/248/152',
+  'https://placekitten.com/g/248/152',
+  'https://placekitten.com/g/249/151',
+  'https://placekitten.com/g/248/152',
+  'https://placekitten.com/g/247/153',
+];
+
 const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
-export {KEYS,OFFERS_LIST, OFFERS_PRICES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortData, SortType};
+export {KEYS,OFFERS_LIST, OFFERS_PRICES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortData, SortType, pictures};

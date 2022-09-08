@@ -8,7 +8,8 @@ const generateOffersListForPoint = (offersList) => {
   if (offersList.length > 0) {
     offersList.forEach((element) => {
       str += `<li class="event__offer">
-                <span class="event__offer-title">${element} &plus;&euro;&nbsp;</span>
+                <span class="event__offer-title">${element.name}</span>&plus;&euro;&nbsp;
+                <span class="event__offer-price">${element.price}</span>
               </li>`;
     });
   }
@@ -16,8 +17,8 @@ const generateOffersListForPoint = (offersList) => {
 };
 
 const createNewPointTemplate = (point) => {
-  const {dates, type, destination, offers, isFavorite} = point;
-  const {iconSrc, name, price} = type;
+  const {dates, type, destination, isFavorite} = point;
+  const {iconSrc, name, price, offers} = type;
   const {start, finish} = dates;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
 

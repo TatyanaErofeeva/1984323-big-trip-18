@@ -1,7 +1,9 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { DESTINATIONS_ARRAY, formatToDateWithTime} from '../mock/const.js';
 import { ROUTE_POINT_TYPES } from '../mock/data.js';
-import { getRandomInteger, getNumberFromString} from '../mock/util.js';
+import {getNumberFromString, getRandomInteger} from '../mock/util.js';
+//import flatpickr from 'flatpickr';
+//import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   id: null,
@@ -91,7 +93,6 @@ const createEditTemplate = (_state = {}) => {
   const {iconSrc, name, price, offers} = type;
   const {start, finish} = dates;
   const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
-
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -139,16 +140,35 @@ const createEditTemplate = (_state = {}) => {
   );
 };
 export default class EditFormView extends AbstractStatefulView {
+  //#startDatepicker = null;
+  //#endDatepicker = null;
+
   constructor(point = BLANK_POINT) {
     super();
     this._state = EditFormView.parsePointToState(point);
 
     this.#setInnerHandlers();
+    //this.#setStartDatepicker();
+    //this.#setEndDatepicker();
   }
 
   get template() {
     return createEditTemplate(this._state);
   }
+
+  /*removeElement = () => {
+    super.removeElement();
+
+    if (this.#startDatepicker) {
+      this.#startDatepicker.destroy();
+      this.#startDatepicker = null;
+    }
+
+    if (this.#endDatepicker) {
+      this.#endDatepicker.destroy();
+      this.#endDatepicker = null;
+    }
+  };*/
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
@@ -170,19 +190,13 @@ export default class EditFormView extends AbstractStatefulView {
     this._callback.click();
   };
 
-  #setInnerHandlers = () => {
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTypePoint );
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#changeOffer );
-    this.element.querySelector('.event__input--destination').addEventListener( 'change', this.#changeDestination );
-    this.element.querySelector('.event__input--price').addEventListener( 'input', this.#changePrice );
-  };
+
 
   #changeTypePoint = ( evt ) => {
     evt.preventDefault();
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
-        type: ROUTE_POINT_TYPES[evt.target.value],
-        //offers: [],
+        type: ROUTE_POINT_TYPES[evt.target.value]
       });
     }
   };
@@ -202,13 +216,15 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       destination: evt.target.value,
+      description: this._state.description,
+      photos:evt.target.value,
     });
   };
 
   #changePrice = (evt) => {
     evt.preventDefault();
     this._setState({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     });
   };
 
@@ -220,9 +236,61 @@ export default class EditFormView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
+    //this.#setStartDatepicker();
+    //this.#setEndDatepicker();
     this.setFormClickHandler(this._callback.click);
     this.setFormSubmitHandler(this._callback.formSubmit);
   };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTypePoint );
+    const offers = this.element.querySelector('.event__available-offers');
+    if (offers) {
+      offers.addEventListener('change', this.#changeOffer );
+    }
+    this.element.querySelector('.event__input--destination').addEventListener( 'change', this.#changeDestination );
+    this.element.querySelector('.event__input--price').addEventListener( 'input', this.#changePrice );
+  };
+
+  /*#startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      start: userDate,
+    });
+  };
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      finish: userDate,
+    });
+  };
+
+  #setStartDatepicker = () => {
+    this.#startDatepicker = flatpickr(
+      this.element.querySelector('.event-start-time'),
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateFrom,
+        onClose: this.#startDateChangeHandler,
+      }
+    );
+  };
+
+  #setEndDatepicker = () => {
+    this.#endDatepicker = flatpickr(
+      this.element.querySelector('.event-end-time'),
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onClose: this.#endDateChangeHandler,
+      }
+    );
+  };
+*/
 
   static parsePointToState = (point) => ({ ...point });
 
