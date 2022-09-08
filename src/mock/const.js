@@ -75,14 +75,6 @@ const OFFERS_LIST = {
   },
 };
 
-const DESTINATIONS_ARRAY = [
-  'Amsterdam',
-  'Geneva',
-  'Tver',
-  'Berlin',
-  'Moscow',
-];
-
 const FILTER_TYPE = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -121,4 +113,5 @@ const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
-export {KEYS,OFFERS_LIST, OFFERS_PRICES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortData, SortType, pictures};
+
+export {KEYS,OFFERS_LIST, OFFERS_PRICES, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortData, SortType, pictures};

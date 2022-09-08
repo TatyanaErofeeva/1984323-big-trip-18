@@ -1,5 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { DESTINATIONS_ARRAY, formatToDateWithTime} from '../mock/const.js';
+import { formatToDateWithTime} from '../mock/const.js';
+import { DESTINATIONS, DESTINATIONS_ARRAY } from '../mock/destination.js';
 import { ROUTE_POINT_TYPES } from '../mock/data.js';
 import {getNumberFromString, getRandomInteger} from '../mock/util.js';
 //import flatpickr from 'flatpickr';
@@ -89,10 +90,13 @@ const generatePhoto = (photosList) => {
 };
 
 const createEditTemplate = (_state = {}) => {
-  const {id, dates, type, destination, description, photos} = _state;
-  const {iconSrc, name, price, offers} = type;
+  const {id, dates, type, destination, basePrice} = _state;
+  const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
-  const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination);
+  const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination.name);
+  //const newPointList = destination.name.filter((element) => element !== destination.name);
+  console.log(generatePhoto(destination.pictures[0].src));
+
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -103,7 +107,7 @@ const createEditTemplate = (_state = {}) => {
         <label class="event__label  event__type-output" for="event-destination-${id}">
           ${name}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination}" list="destination-list-${id}">
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${id}">
         <datalist id="destination-list-${id}">
         ${generateDistDatalist(newPointList)}
         </datalist>
@@ -115,7 +119,7 @@ const createEditTemplate = (_state = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}">
+        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
@@ -127,10 +131,10 @@ const createEditTemplate = (_state = {}) => {
     ${generateOffersList(offers)}
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
+        <p class="event__destination-description">${destination.description}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${generatePhoto(photos)}
+          ${generatePhoto(destination.pictures[0].src)}
           </div>
         </div>
       </section>
@@ -190,13 +194,11 @@ export default class EditFormView extends AbstractStatefulView {
     this._callback.click();
   };
 
-
-
   #changeTypePoint = ( evt ) => {
     evt.preventDefault();
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
-        type: ROUTE_POINT_TYPES[evt.target.value]
+        type: ROUTE_POINT_TYPES[evt.target.value],
       });
     }
   };
@@ -215,9 +217,9 @@ export default class EditFormView extends AbstractStatefulView {
   #changeDestination = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      destination: evt.target.value,
-      description: this._state.description,
-      photos:evt.target.value,
+      destination: DESTINATIONS[evt.target.value],
+      //description: this._state.description,
+      //photos:evt.target.value,
     });
   };
 

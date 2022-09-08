@@ -1,8 +1,9 @@
 import {getRandomInteger, getRandomArrayElement, getRandomArray} from './util.js';
-import { FILTER_TYPE, OFFERS_LIST, pictures, DESCRIPTIONS, DESTINATIONS_ARRAY } from './const.js';
+import { FILTER_TYPE, OFFERS_LIST, pictures, DESCRIPTIONS} from './const.js';
 import dayjs from 'dayjs';
 import { isFutureDate, isPastDate } from './util.js';
 import { nanoid } from 'nanoid';
+import { DESTINATIONS, DESTINATIONS_ARRAY} from './destination.js';
 
 const getObjectsArray = (obj, keysArr) => {
   const newArray = [];
@@ -43,81 +44,77 @@ const ROUTE_POINT_TYPES = {
     name: 'Taxi',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/taxi.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
   bus: {
     name: 'Bus',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/bus.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
   train: {
     name: 'Train',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/train.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
   ship: {
     name: 'Ship',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/ship.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
   drive: {
     name: 'Drive',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/drive.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
   flight: {
     name: 'Flight',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/flight.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
   checkIn: {
     name: 'Check-in',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/check-in.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
   sightseeng: {
     name: 'Sightseeng',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/sightseeing.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
   restaurant: {
     name: 'Restaurant',
     offers: getObjectsArray(OFFERS_LIST, getpointOffers()),
     iconSrc: '../img/icons/restaurant.png',
-    price: getRandomInteger(2, 20) * 20,
+    //price: getRandomInteger(2, 20) * 20,
   },
 };
-const createPhotosArr = () => {
-  const count = getRandomInteger(1, 7);
-  const src = [];
-  for (let i = 0; i < count; i++) {
-    src.push(pictures[i]);
-  }
-  return src;
-};
+
 
 const generatePoint = () => {
-  const destination = getRandomArrayElement(DESTINATIONS_ARRAY);
+  //const destination = getRandomArrayElement(DESTINATIONS_ARRAY);
   const pointType = getRandomArrayElement(typePoints);
   const type = ROUTE_POINT_TYPES[pointType];
   const offersList = type['offers'];
   const typeOfStringOffers = offersList.map(({id}) => id);
+
+  const destinationExample = getRandomArrayElement(DESTINATIONS_ARRAY);
+  const destinationObject = () => DESTINATIONS[destinationExample];
   return {
     id: nanoid(),
     basePrice: getRandomInteger(10, 40),
     dates: generateDate(),
-    destination,
+    destination:destinationObject(),
     type,
     offers: typeOfStringOffers,
-    description: getRandomArrayElement(DESCRIPTIONS),
-    photos: createPhotosArr(),
+    //description: getRandomArrayElement(DESCRIPTIONS),
+    //photos: createPhotosArr(),
     isFavorite: Boolean(getRandomInteger()),
   };
 };
