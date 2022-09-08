@@ -94,8 +94,6 @@ const createEditTemplate = (_state = {}) => {
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
   const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination.name);
-  //const newPointList = destination.name.filter((element) => element !== destination.name);
-  console.log(generatePhoto(destination.pictures[0].src));
 
   return (
     `<li class="trip-events__item">
@@ -218,8 +216,6 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       destination: DESTINATIONS[evt.target.value],
-      //description: this._state.description,
-      //photos:evt.target.value,
     });
   };
 
