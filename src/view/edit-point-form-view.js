@@ -34,11 +34,11 @@ const generateOffersList = (events) => {
               <div class="event__available-offers">`;
     events.forEach((element) => {
       str += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${element}-1" type="checkbox" name="event-offer-${events[element]}" ${getRandomInteger() ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${element}-1">
-        <span class="event__offer-title">${element['name']}</span>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${element.id}-1" type="checkbox" name="event-offer-${element.id}" ${getRandomInteger() ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${element.id}-1">
+        <span class="event__offer-title">${element.name}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${element['price']}</span>
+        <span class="event__offer-price">${element.price}</span>
       </label>
     </div>`;
     });
@@ -94,7 +94,7 @@ const createEditTemplate = (_state = {}) => {
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
   const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination.name);
-
+  console.log(generateOffersList(offers));
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
