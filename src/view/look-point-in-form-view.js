@@ -3,14 +3,16 @@ import {getDateDiff} from '../mock/util.js';
 import dayjs from 'dayjs';
 import { formatToDateMonthsAndDay, formatToFullDate, formatToTime } from '../mock/util.js';
 
-const generateOffersListForPoint = (offersList) => {
+const generateOffersListForPoint = (offersList, point) => {
   let str = '';
   if (offersList.length > 0) {
     offersList.forEach((element) => {
-      str += `<li class="event__offer">
+      if (point.offers.includes(element.id)){
+        str += `<li class="event__offer">
                 <span class="event__offer-title">${element.name}</span>&plus;&euro;&nbsp;
                 <span class="event__offer-price">${element.price}</span>
               </li>`;
+      }
     });
   }
   return str;
@@ -21,6 +23,7 @@ const createNewPointTemplate = (point) => {
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
+
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -38,11 +41,11 @@ const createNewPointTemplate = (point) => {
           <p class="event__duration">${getDateDiff(dayjs(start), dayjs(finish))}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
-        </p>
+                  &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
+                </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-        ${generateOffersListForPoint(offers)}
+        ${generateOffersListForPoint(offers, point)}
         </ul>
         <button class="event__favorite-btn ${favorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
