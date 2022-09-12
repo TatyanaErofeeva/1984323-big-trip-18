@@ -109,9 +109,6 @@ const pictures = [
   'https://placekitten.com/g/247/153',
 ];
 
-const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
-const formatToTime = (date) => dayjs(date).format('HH:mm');
-const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
-const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
 
-export {KEYS,OFFERS_LIST, OFFERS_PRICES, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortData, SortType, pictures};
+
+export {KEYS,OFFERS_LIST, OFFERS_PRICES, FILTER_TYPE, DESCRIPTIONS, SortData, SortType, pictures};

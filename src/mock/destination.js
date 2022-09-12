@@ -1,13 +1,15 @@
 import { pictures, DESCRIPTIONS} from './const.js';
 import {getRandomInteger, getRandomArrayElement} from './util.js';
 
-const DESTINATIONS_ARRAY = [
+/*const DESTINATIONS_ARRAY = [
   'Amsterdam',
   'Geneva',
   'Tver',
   'Berlin',
   'Moscow',
-];
+];*/
+const MIN_PICS_COUNT = 1;
+const MAX_PICS_COUNT = 5;
 
 const createPhotosArr = () => {
   const count = getRandomInteger(1, 7);
@@ -18,65 +20,49 @@ const createPhotosArr = () => {
   return src;
 };
 
-let id = 0;
+const createPhotoItems = () => (
+  {
+    src: getRandomArrayElement(createPhotosArr()),
+    description: getRandomArrayElement(DESCRIPTIONS)
+  }
+);
 
-const DESTINATIONS = {
-  Amsterdam: {
-    'id': id++,
-    'description': getRandomArrayElement(DESCRIPTIONS),
-    'name': 'Amsterdam',
-    'pictures': [
-      {
-        'src': createPhotosArr(),
-        'description': getRandomArrayElement(DESCRIPTIONS)
-      }
-    ]
-  },
-  Geneva: {
-    'id': id++,
-    'description': getRandomArrayElement(DESCRIPTIONS),
-    'name': 'Geneva',
-    'pictures': [
-      {
-        'src': createPhotosArr(),
-        'description': getRandomArrayElement(DESCRIPTIONS)
-      }
-    ]
-  },
-  Tver: {
-    'id': id++,
-    'description': getRandomArrayElement(DESCRIPTIONS),
-    'name': 'Tver',
-    'pictures': [
-      {
-        'src': createPhotosArr(),
-        'description': getRandomArrayElement(DESCRIPTIONS)
-      }
-    ]
-  },
-  Berlin: {
-    'id': id++,
-    'description': getRandomArrayElement(DESCRIPTIONS),
-    'name': 'Berlin',
-    'pictures': [
-      {
-        'src': createPhotosArr(),
-        'description': getRandomArrayElement(DESCRIPTIONS)
-      }
-    ]
-  },
-  Moscow: {
-    'id': id++,
-    'description': getRandomArrayElement(DESCRIPTIONS),
-    'name': 'Moscow',
-    'pictures': [
-      {
-        'src': createPhotosArr(),
-        'description': getRandomArrayElement(DESCRIPTIONS)
-      }
-    ]
-  },
-};
+let id = 1;
 
-export {DESTINATIONS, DESTINATIONS_ARRAY};
+const DESTINATIONS = [
+  {
+    id: id++,
+    description: getRandomArrayElement(DESCRIPTIONS),
+    name: 'Amsterdam',
+    pictures: Array.from({length: getRandomInteger(MIN_PICS_COUNT, MAX_PICS_COUNT)}, () => createPhotoItems())
+  },
+  {
+    id: id++,
+    description: getRandomArrayElement(DESCRIPTIONS),
+    name: 'Geneva',
+    pictures: Array.from({length: getRandomInteger(MIN_PICS_COUNT, MAX_PICS_COUNT)}, () => createPhotoItems())
+  },
+  {
+    id: id++,
+    description: getRandomArrayElement(DESCRIPTIONS),
+    name: 'Tver',
+    pictures: Array.from({length: getRandomInteger(MIN_PICS_COUNT, MAX_PICS_COUNT)}, () => createPhotoItems())
+  },
+  {
+    id: id++,
+    description: getRandomArrayElement(DESCRIPTIONS),
+    name: 'Berlin',
+    pictures: Array.from({length: getRandomInteger(MIN_PICS_COUNT, MAX_PICS_COUNT)}, () => createPhotoItems())
+  },
+  {
+    id: id++,
+    description: getRandomArrayElement(DESCRIPTIONS),
+    name: 'Moscow',
+    pictures: Array.from({length: getRandomInteger(MIN_PICS_COUNT, MAX_PICS_COUNT)}, () => createPhotoItems())
+  },
+];
+
+const directions = DESTINATIONS.map(({name}) => name);
+
+export {DESTINATIONS, directions};
 

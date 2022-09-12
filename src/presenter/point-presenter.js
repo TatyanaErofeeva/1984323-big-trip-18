@@ -8,7 +8,8 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-const isEscKey = (evt) => evt.key === KEYS.ESCAPE[0] || evt.key === KEYS.ESCAPE[1];
+//const isEscKey = (evt) => evt.key === KEYS.ESCAPE[0] || evt.key === KEYS.ESCAPE[1];
+const isEscKey = (evt) => KEYS.ESCAPE.includes(evt.key);
 
 export default class PointPresenter {
   #pointListContainer = null;

@@ -1,8 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { formatToDateWithTime} from '../mock/const.js';
-import { DESTINATIONS, DESTINATIONS_ARRAY } from '../mock/destination.js';
+import { formatToDateWithTime} from '../mock/util.js';
+import { DESTINATIONS, directions } from '../mock/destination.js';
 import { ROUTE_POINT_TYPES } from '../mock/data.js';
-import {getNumberFromString, getRandomInteger} from '../mock/util.js';
+import {getNumberFromString} from '../mock/util.js';
 //import flatpickr from 'flatpickr';
 //import 'flatpickr/dist/flatpickr.min.css';
 
@@ -11,7 +11,7 @@ const BLANK_POINT = {
   basePrice: null,
   dates: '',
   destination:'',
-  type:'',
+  type: Object.values(ROUTE_POINT_TYPES)[0],
   offers: [],
   description: '',
   photos: [],
@@ -26,7 +26,7 @@ const generateDistDatalist = (destinations) => {
   return str;
 };
 
-const generateOffersList = (events) => {
+const generateOffersList = (events, _state) => {
   let str = '';
   if (events.length > 0) {
     str += `<section class="event__section  event__section--offers">
@@ -34,8 +34,8 @@ const generateOffersList = (events) => {
               <div class="event__available-offers">`;
     events.forEach((element) => {
       str += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${element.id}-1" type="checkbox" name="event-offer-${element.id}" ${getRandomInteger() ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${element.id}-1">
+      <input class="event__offer-checkbox  visually-hidden" value = "${element.id}"  id="event-offer-${element.name}" type="checkbox" name="event-offer-${element.name}" ${_state.offers.includes(element.id) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${element.name}">
         <span class="event__offer-title">${element.name}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${element.price}</span>
@@ -58,12 +58,12 @@ const generateTimeData = (start, finish, id) => `<div class="event__field-group 
 const generateEventTypeList = (eventsObject, iconSrc, id, eventType) => {
   const eventsList = Object.keys(eventsObject);
   let events = '';
-  for (let i = 0; i < eventsList.length; i++) {
+  eventsList.forEach((element) => {
     events += `<div class="event__type-item">
-                          <input id="event-type-${eventsObject[eventsList[i]].name.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventsList[i]}" ${(eventType === eventsObject[eventsList[i]].name) ? 'checked' : ''}>
-                          <label class="event__type-label  event__type-label--${eventsObject[eventsList[i]].name.toLowerCase()}" for="event-type-${eventsObject[eventsList[i]].name.toLowerCase()}-${id}">${eventsObject[eventsList[i]].name}</label>
-                        </div>`;
-  }
+      <input id="event-type-${eventsObject[element].name.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${(eventType === eventsObject[element].name) ? 'checked' : ''}>
+      <label class="event__type-label  event__type-label--${eventsObject[element].name.toLowerCase()}" for="event-type-${eventsObject[element].name.toLowerCase()}-${id}">${eventsObject[element].name}</label>
+    </div>`;
+  });
   return `<div class="event__type-wrapper">
                       <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                         <span class="visually-hidden">Choose event type</span>
@@ -83,7 +83,7 @@ const generatePhoto = (photosList) => {
   let str = '';
   if (photosList.length > 0) {
     photosList.forEach((element) => {
-      str += `<img class="event__photo" src=${element} alt="Event photo"></img>`;
+      str += `<img class="event__photo" src=${element.src} alt="Event photo">`;
     });
   }
   return str;
@@ -93,8 +93,8 @@ const createEditTemplate = (_state = {}) => {
   const {id, dates, type, destination, basePrice} = _state;
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
-  const newPointList = DESTINATIONS_ARRAY.filter((element) => element !== destination.name);
-  console.log(generateOffersList(offers));
+  const newPointList = directions.filter((element) => element !== destination.name);
+
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -126,13 +126,13 @@ const createEditTemplate = (_state = {}) => {
       </button>
     </header>
     <section class="event__details">
-    ${generateOffersList(offers)}
+    ${generateOffersList(offers, _state)}
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destination.description}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${generatePhoto(destination.pictures[0].src)}
+          ${generatePhoto(destination.pictures)}
           </div>
         </div>
       </section>
@@ -197,6 +197,7 @@ export default class EditFormView extends AbstractStatefulView {
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
         type: ROUTE_POINT_TYPES[evt.target.value],
+        offers: []
       });
     }
   };
@@ -204,10 +205,10 @@ export default class EditFormView extends AbstractStatefulView {
   #changeOffer = (evt) => {
     evt.preventDefault();
     if (evt.target.classList.contains('event__offer-checkbox')) {
-      const isTrue = this._state.offers.includes(getNumberFromString(evt.target.id));
-      const numberId = getNumberFromString( evt.target.id );
+      const isChecked = this._state.offers.includes(getNumberFromString(evt.target.value));
+      const numberId = getNumberFromString( evt.target.value );
       this._setState({
-        offers: !isTrue ? [...this._state.offers, numberId] : this._state.offers.filter(( item ) => item !== numberId ),
+        offers: isChecked ? this._state.offers.filter(( item ) => item !== numberId ) : [...this._state.offers, numberId],
       });
     }
   };
@@ -292,9 +293,5 @@ export default class EditFormView extends AbstractStatefulView {
 
   static parsePointToState = (point) => ({ ...point });
 
-  static parseStateToPoint = (state) => {
-    const point = { ...state };
-
-    return point;
-  };
+  static parseStateToPoint = (state) =>({ ...state });
 }
