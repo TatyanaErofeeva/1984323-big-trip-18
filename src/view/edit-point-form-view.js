@@ -216,7 +216,7 @@ export default class EditFormView extends AbstractStatefulView {
   #changeDestination = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      destination: DESTINATIONS[evt.target.value],
+      destination: DESTINATIONS.find((element) => element.name === evt.target.value)
     });
   };
 

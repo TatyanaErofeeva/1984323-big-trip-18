@@ -1,13 +1,6 @@
 import { pictures, DESCRIPTIONS} from './const.js';
 import {getRandomInteger, getRandomArrayElement} from './util.js';
 
-/*const DESTINATIONS_ARRAY = [
-  'Amsterdam',
-  'Geneva',
-  'Tver',
-  'Berlin',
-  'Moscow',
-];*/
 const MIN_PICS_COUNT = 1;
 const MAX_PICS_COUNT = 5;
 
