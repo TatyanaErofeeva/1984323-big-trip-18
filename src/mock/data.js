@@ -89,8 +89,7 @@ const ROUTE_POINT_TYPES = {
 
 const generatePoint = () => {
   const type = ROUTE_POINT_TYPES[getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES))];
-  const offersList = type.offers;
-  const typeOfStringOffers = offersList.map(({id}) => id);
+  const typeOfStringOffers = getRandomArray(getRandomInteger(0, type.offers.length),type.offers.map(({id}) => id));
   const destinationObject = () => getRandomArrayElement(DESTINATIONS);
 
   return {

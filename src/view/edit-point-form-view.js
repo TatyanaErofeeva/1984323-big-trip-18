@@ -2,7 +2,6 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatToDateWithTime} from '../mock/util.js';
 import { DESTINATIONS, directions } from '../mock/destination.js';
 import { ROUTE_POINT_TYPES } from '../mock/data.js';
-import {getNumberFromString} from '../mock/util.js';
 //import flatpickr from 'flatpickr';
 //import 'flatpickr/dist/flatpickr.min.css';
 
@@ -205,10 +204,10 @@ export default class EditFormView extends AbstractStatefulView {
   #changeOffer = (evt) => {
     evt.preventDefault();
     if (evt.target.classList.contains('event__offer-checkbox')) {
-      const isChecked = this._state.offers.includes(getNumberFromString(evt.target.value));
-      const numberId = getNumberFromString( evt.target.value );
       this._setState({
-        offers: isChecked ? this._state.offers.filter(( item ) => item !== numberId ) : [...this._state.offers, numberId],
+        offers: evt.target.checked
+          ? [...this._state.offers, evt.target.value]
+          : this._state.offers.filter(( item ) => item !== evt.target.value),
       });
     }
   };
