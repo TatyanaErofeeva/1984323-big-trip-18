@@ -252,13 +252,19 @@ export default class EditFormView extends AbstractStatefulView {
 
   #startDateChangeHandler = ([userDate]) => {
     this.updateElement({
-      start: userDate,
+      dates: {
+        ...this._state.dates,
+        start: [userDate],
+      }
     });
   };
 
   #endDateChangeHandler = ([userDate]) => {
     this.updateElement({
-      finish: userDate,
+      dates: {
+        ...this._state.dates,
+        finish: [userDate],
+      }
     });
   };
 
@@ -270,7 +276,7 @@ export default class EditFormView extends AbstractStatefulView {
         'time_24hr': true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.start,
-        onClose: this.#startDateChangeHandler,
+        onChange: this.#startDateChangeHandler,
       }
     );
   };
@@ -284,7 +290,7 @@ export default class EditFormView extends AbstractStatefulView {
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.finish,
         minDate: this._state.start,
-        onClose: this.#endDateChangeHandler,
+        onChange: this.#endDateChangeHandler,
       }
     );
   };
@@ -292,4 +298,5 @@ export default class EditFormView extends AbstractStatefulView {
   static parsePointToState = (point) => ({ ...point });
 
   static parseStateToPoint = (state) =>({ ...state });
+
 }

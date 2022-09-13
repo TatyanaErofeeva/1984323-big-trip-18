@@ -1,6 +1,4 @@
 import {getRandomInteger} from './util.js';
-//import { getObjectsArray} from './data.js';
-import dayjs from 'dayjs';
 
 const KEYS = {
   ESCAPE: ['Esc', 'Escape']
@@ -108,7 +106,5 @@ const pictures = [
   'https://placekitten.com/g/248/152',
   'https://placekitten.com/g/247/153',
 ];
-
-
 
 export {KEYS,OFFERS_LIST, OFFERS_PRICES, FILTER_TYPE, DESCRIPTIONS, SortData, SortType, pictures};

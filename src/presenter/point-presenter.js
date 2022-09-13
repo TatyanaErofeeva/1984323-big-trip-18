@@ -8,7 +8,6 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-//const isEscKey = (evt) => evt.key === KEYS.ESCAPE[0] || evt.key === KEYS.ESCAPE[1];
 const isEscKey = (evt) => KEYS.ESCAPE.includes(evt.key);
 
 export default class PointPresenter {
@@ -78,7 +77,6 @@ export default class PointPresenter {
   };
 
   #replaceFormToCard = () => {
-    //this.#pointEditComponent.reset(this.#point);
     replace(this.#pointComponent,this.#pointEditComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;

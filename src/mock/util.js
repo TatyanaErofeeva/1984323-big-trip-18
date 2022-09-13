@@ -56,6 +56,4 @@ const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
 
-//const getNumberFromString = (str) => Number(str.split('').filter((item) => Number(item)).join(''));
-
 export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, updateItem, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime};
