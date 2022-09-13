@@ -1,24 +1,26 @@
 import AbstractView from '../framework/view/abstract-view';
 import {getDateDiff} from '../mock/util.js';
 import dayjs from 'dayjs';
-import { formatToDateMonthsAndDay, formatToFullDate, formatToTime } from '../mock/const.js';
+import { formatToDateMonthsAndDay, formatToFullDate, formatToTime } from '../mock/util.js';
 
-const generateOffersListForPoint = (offersList) => {
+const generateOffersListForPoint = (offersList, point) => {
   let str = '';
   if (offersList.length > 0) {
     offersList.forEach((element) => {
-      str += `<li class="event__offer">
-                <span class="event__offer-title">${element.name} &plus;&euro;&nbsp;</span>
+      if (point.offers.includes(element.id)){
+        str += `<li class="event__offer">
+                <span class="event__offer-title">${element.name}</span>&plus;&euro;&nbsp;
                 <span class="event__offer-price">${element.price}</span>
               </li>`;
+      }
     });
   }
   return str;
 };
 
 const createNewPointTemplate = (point) => {
-  const {dates, type, destination, offers, isFavorite} = point;
-  const {iconSrc, name, price} = type;
+  const {dates, type, destination, isFavorite, basePrice} = point;
+  const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
 
@@ -29,7 +31,7 @@ const createNewPointTemplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="${iconSrc}" alt="Event type icon">
         </div>
-        <h3 class="event__title">${name} ${destination}</h3>
+        <h3 class="event__title">${name} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dayjs(start)}">${formatToTime(start)}</time>
@@ -39,11 +41,11 @@ const createNewPointTemplate = (point) => {
           <p class="event__duration">${getDateDiff(dayjs(start), dayjs(finish))}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${price}</span>
-        </p>
+                  &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
+                </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-        ${generateOffersListForPoint(offers)}
+        ${generateOffersListForPoint(offers, point)}
         </ul>
         <button class="event__favorite-btn ${favorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>

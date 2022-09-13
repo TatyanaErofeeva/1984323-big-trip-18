@@ -51,6 +51,9 @@ const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+const formatToTime = (date) => dayjs(date).format('HH:mm');
+const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
+const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
 
-
-export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, updateItem};
+export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, updateItem, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime};

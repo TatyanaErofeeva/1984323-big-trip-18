@@ -84,7 +84,7 @@ export default class RoutePresenter {
 
   #renderPoints = () =>{
     this.#routePoints.forEach(( point ) => {
-      this.#renderPoint( point );
+      this.#renderPoint(point);
     });
   };
 

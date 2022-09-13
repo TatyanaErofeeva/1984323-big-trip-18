@@ -1,37 +1,30 @@
-import {getRandomInteger, getRandomArrayElement} from './util.js';
-import { DESTINATIONS_ARRAY, DESCRIPTIONS, OFFERS_LIST, ROUTE_POINT_TYPES } from './const.js';
-import { FILTER_TYPE } from './const.js';
+import {getRandomInteger, getRandomArrayElement, getRandomArray} from './util.js';
+import { FILTER_TYPE, OFFERS_LIST} from './const.js';
 import dayjs from 'dayjs';
 import { isFutureDate, isPastDate } from './util.js';
 import { nanoid } from 'nanoid';
-const getObjectsArray = (obj, keysArr) => {
+import { DESTINATIONS} from './destination.js';
+
+const getObjectsArray = (obj, MAX_NUMBER_ELEMENTS) => {
+  const getPointOffers = () => getRandomArray(getRandomInteger(0, MAX_NUMBER_ELEMENTS), Object.keys(OFFERS_LIST));
+  const keys = getPointOffers();
   const newArray = [];
-  if (keysArr.length > 0) {
-    for (let i = 0; i < keysArr.length; i++) {
-      const element = keysArr[i];
+  if (keys.length > 0) {
+    for (let i = 0; i < keys.length; i++) {
+      const element = keys[i];
       newArray.push(obj[element]);
     }
   }
   return newArray;
 };
 
-const createPhotosArr = () => {
-  const count = getRandomInteger(1, 9);
-  const src = [];
-  for (let i = 0; i < count; i++) {
-    src.push(`http://picsum.photos/248/152?r=${Math.random()}`);
-  }
-
-  return src;
-};
-
 let startTripDate = dayjs().add(0, 'day').startOf('date');
 
 const generateDate = () => {
   const MAX_TRIP_TIME = 6;
-  const tripTime = getRandomInteger(1, MAX_TRIP_TIME);
+  const tripTime = getRandomInteger(1, MAX_TRIP_TIME) * 30;
   const start = startTripDate;
-  const finish = startTripDate.add(tripTime, 'days');
+  const finish = startTripDate.add(tripTime, 'minutes');
   startTripDate = finish;
   return {
     start:  start.toISOString(),
@@ -45,22 +38,68 @@ const filter = {
   [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dateTo)),
 };
 
+const ROUTE_POINT_TYPES = {
+  taxi: {
+    name: 'Taxi',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/taxi.png',
+  },
+  bus: {
+    name: 'Bus',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/bus.png',
+  },
+  train: {
+    name: 'Train',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/train.png',
+  },
+  ship: {
+    name: 'Ship',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/ship.png',
+  },
+  drive: {
+    name: 'Drive',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/drive.png',
+  },
+  flight: {
+    name: 'Flight',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/flight.png',
+  },
+  checkIn: {
+    name: 'Check-in',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/check-in.png',
+  },
+  sightseeng: {
+    name: 'Sightseeng',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/sightseeing.png',
+  },
+  restaurant: {
+    name: 'Restaurant',
+    offers: getObjectsArray(OFFERS_LIST, 5),
+    iconSrc: '../img/icons/restaurant.png',
+  },
+};
+
+
 const generatePoint = () => {
-  const destination = getRandomArrayElement(DESTINATIONS_ARRAY);
-  const pointType = getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES));
-  const type = ROUTE_POINT_TYPES[pointType];
-  const offersList = type['offers'];
-  const offersObjectList = getObjectsArray(OFFERS_LIST, offersList);
+  const type = ROUTE_POINT_TYPES[getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES))];
+  const typeOfStringOffers = getRandomArray(getRandomInteger(0, type.offers.length),type.offers.map(({id}) => id));
+  const destinationObject = () => getRandomArrayElement(DESTINATIONS);
+
   return {
     id: nanoid(),
     basePrice: getRandomInteger(10, 40),
     dates: generateDate(),
-    destination,
+    destination:destinationObject(),
     type,
-    offers: offersObjectList,
-    description: getRandomArrayElement(DESCRIPTIONS),
-    photos: createPhotosArr(),
+    offers: typeOfStringOffers,
     isFavorite: Boolean(getRandomInteger()),
   };
 };
-export {generatePoint, filter};
+export {generatePoint, filter, getObjectsArray, ROUTE_POINT_TYPES};

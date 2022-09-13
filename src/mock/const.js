@@ -1,5 +1,4 @@
-import {getRandomInteger, getRandomArray} from './util.js';
-import dayjs from 'dayjs';
+import {getRandomInteger} from './util.js';
 
 const KEYS = {
   ESCAPE: ['Esc', 'Escape']
@@ -74,71 +73,6 @@ const OFFERS_LIST = {
   },
 };
 
-const ROUTE_POINT_TYPES = {
-  taxi: {
-    name: 'Taxi',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/taxi.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-  bus: {
-    name: 'Bus',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/bus.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-  train: {
-    name: 'Train',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/train.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-  ship: {
-    name: 'Ship',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/ship.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-  drive: {
-    name: 'Drive',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/drive.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-  flight: {
-    name: 'Flight',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/flight.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-  checkIn: {
-    name: 'Check-in',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/check-in.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-  sightseeng: {
-    name: 'Sightseeng',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/sightseeing.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-  restaurant: {
-    name: 'Restaurant',
-    offers: getRandomArray(getRandomInteger(0, 5), Object.keys(OFFERS_LIST)),
-    iconSrc: '../img/icons/restaurant.png',
-    price: getRandomInteger(2, 20) * 20,
-  },
-};
-
-const DESTINATIONS_ARRAY = [
-  'Amsterdam',
-  'Geneva',
-  'Tver',
-  'Berlin',
-  'Moscow',
-];
-
 const FILTER_TYPE = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -161,8 +95,16 @@ const SortData = [
   { item: 'offer', id: SortType.OFFER, name: 'Offers', checked: false, disabled: true },
 ];
 
-const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
-const formatToTime = (date) => dayjs(date).format('HH:mm');
-const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
-const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
-export {KEYS,OFFERS_LIST, OFFERS_PRICES, ROUTE_POINT_TYPES, DESTINATIONS_ARRAY, FILTER_TYPE, DESCRIPTIONS, formatToDateWithTime, formatToTime, formatToFullDate, formatToDateMonthsAndDay, SortData, SortType};
+const pictures = [
+  'https://placekitten.com/g/247/153',
+  'https://placekitten.com/g/249/151',
+  'https://placekitten.com/g/250/152',
+  'https://placekitten.com/g/247/153',
+  'https://placekitten.com/g/248/152',
+  'https://placekitten.com/g/248/152',
+  'https://placekitten.com/g/249/151',
+  'https://placekitten.com/g/248/152',
+  'https://placekitten.com/g/247/153',
+];
+
+export {KEYS,OFFERS_LIST, OFFERS_PRICES, FILTER_TYPE, DESCRIPTIONS, SortData, SortType, pictures};
