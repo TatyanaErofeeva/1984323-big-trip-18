@@ -8,14 +8,14 @@ const createSortTemplate = ({ item, id, name, checked, disabled }) => (
 );
 
 export default class SortView extends AbstractView {
-
-  constructor( sortData ) {
+  #currentSortType = null;
+  constructor(currentSortType) {
     super();
-    this.sortData = sortData;
+    this.#currentSortType = currentSortType;
   }
 
   get template() {
-    const sortList = this.sortData.map(( item ) => createSortTemplate( item )).join('');
+    const sortList = this.#currentSortType.map(( item ) => createSortTemplate( item )).join('');
 
     return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
               ${ sortList }
