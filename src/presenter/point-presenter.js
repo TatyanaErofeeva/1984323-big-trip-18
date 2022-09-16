@@ -131,3 +131,5 @@ export default class PointPresenter {
   };
 }
 
+export {isEscKey};
+

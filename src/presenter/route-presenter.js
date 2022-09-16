@@ -6,6 +6,7 @@ import PointPresenter from './point-presenter.js';
 import { sortByPrice, sortByTime, sortByDay } from '../mock/sort.js';
 import { FILTER_TYPE, SortData, SortType, UpdateType, UserAction } from '../mock/const.js';
 import { filter } from '../mock/data.js';
+import PointNewPresenter from './point-new-presenter.js';
 
 const pageMain = document.querySelector('.page-main');
 const tripEventsContainer = pageMain.querySelector('.trip-events');
@@ -16,6 +17,7 @@ export default class RoutePresenter {
   #sortComponent = null;
   #filterModel = null;
   #pointPresenter = new Map();
+  #pointNewPresenter = null;
   #tripList = new PointsListView();
   #noPointComponent = null;
   #currentSortType = SortData[0];
@@ -24,9 +26,10 @@ export default class RoutePresenter {
   init = (pointsContainer, pointsModel, filterModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
+    this.#pointNewPresenter = new PointNewPresenter(this.#sortComponent, this.#handleViewAction);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
-    this.#filterModel = filterModel;
     this.#filterModel.addObserver(this.#handleModelEvent);
 
     this.#renderRoute();
@@ -52,12 +55,14 @@ export default class RoutePresenter {
     return filteredPoints;
   }
 
-  /*createPoint = () => {
+  createPoint = (callback) => {
     this.#currentSortType = SortData[0];
     this.#filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPE.EVERYTHING);
-  };*/
+    this.#pointNewPresenter.init(callback);
+  };
 
   #handleModeChange = () => {
+    this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
@@ -119,6 +124,7 @@ export default class RoutePresenter {
   };
 
   #clearRoute = ({resetSortType = false} = {}) => {
+    this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 
@@ -149,7 +155,7 @@ export default class RoutePresenter {
     const pointsCount = points.length;
     render( this.#tripList, this.#pointsContainer );
 
-    if (pointsCount.length === 0) {
+    if (pointsCount === 0) {
       this.#renderNoPoints();
       return;
     }

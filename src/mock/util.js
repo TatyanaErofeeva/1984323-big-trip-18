@@ -24,7 +24,7 @@ const getRandomArray = (count, arr) => {
 
 const addZeroToNumber = (number) => (number < 10) ? `0${number}` : number;
 
-const isFutureDate = (dateFrom, dateTo) => dayjs().isBefore(dayjs(dateFrom)) || dayjs().isSame(dayjs(dateFrom)) || dayjs().isBefore(dayjs(dateTo));
+const isFutureDate = (dateFrom) => dayjs().isBefore(dayjs(dateFrom)) || dayjs().isSame(dayjs(dateFrom), 'day');
 
 const isPastDate = (date) => dayjs().isAfter(dayjs(date));
 

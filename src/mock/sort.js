@@ -9,8 +9,8 @@ export const sortByTime = (timeA, timeB) => {
 };
 
 export const sortByPrice = (pointA, pointB) => {
-  pointA = pointA.type.price;
-  pointB = pointB.type.price;
+  pointA = pointA.basePrice;
+  pointB = pointB.basePrice;
   return (pointB - pointA);
 };
 
