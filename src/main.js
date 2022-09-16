@@ -24,8 +24,10 @@ const handleNewPointButtonClick = () => {
   RoutePresenter.createPoint(handleNewPointFormClose);
   newPointButtonComponent.element.disabled = true;
 };
+
 render (new SiteMenuView(), headerMain, RenderPosition.AFTERBEGIN);
 render (newPointButtonComponent, headerMain);
+
 newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
 boardPresenter.init( tripEvents, pointsModel, filterModel);
 filterPresenter.init();
