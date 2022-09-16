@@ -21,7 +21,7 @@ const handleNewPointFormClose = () => {
 };
 
 const handleNewPointButtonClick = () => {
-  RoutePresenter.createPoint(handleNewPointFormClose);
+  boardPresenter.createPoint(handleNewPointFormClose);
   newPointButtonComponent.element.disabled = true;
 };
 

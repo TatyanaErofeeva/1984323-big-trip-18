@@ -8,9 +8,9 @@ import he from 'he';
 
 const BLANK_POINT = {
   id: null,
-  basePrice: null,
+  basePrice: 20,
   dates: '',
-  destination:'',
+  destination: DESTINATIONS[0],
   type: Object.values(ROUTE_POINT_TYPES)[0],
   offers: [],
   description: '',
@@ -184,7 +184,9 @@ export default class EditFormView extends AbstractStatefulView {
 
   setFormClickHandler = (callback) => {
     this._callback.click = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClickHandler);
+    const editHandler = this.element.querySelector('.event__rollup-btn');
+    if(editHandler){
+      editHandler.addEventListener('click', this.#formClickHandler);}
   };
 
   #formClickHandler = (evt) => {

@@ -27,7 +27,7 @@ export default class RoutePresenter {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
-    this.#pointNewPresenter = new PointNewPresenter(this.#sortComponent, this.#handleViewAction);
+    this.#pointNewPresenter = new PointNewPresenter(pointsContainer, this.#handleViewAction);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -67,7 +67,6 @@ export default class RoutePresenter {
   };
 
   #handleViewAction = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointsModel.updatePoint(updateType, update);
@@ -82,7 +81,6 @@ export default class RoutePresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenter.get(data.id).init(data);
