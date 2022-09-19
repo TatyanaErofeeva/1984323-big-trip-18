@@ -5,10 +5,9 @@ import { ROUTE_POINT_TYPES } from '../mock/data.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
-import { nanoid } from 'nanoid';
 
 const BLANK_POINT = {
-  id: nanoid(),
+  id: null,
   basePrice: 20,
   dates: '',
   destination: DESTINATIONS[0],

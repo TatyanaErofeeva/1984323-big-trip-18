@@ -18,19 +18,16 @@ export default class PointNewPresenter {
 
   init = (callback) => {
     this.#destroyCallback = callback;
-    //console.log(this.#destroyCallback);
 
     if (this.#pointEditComponent !== null) {
       return;
     }
 
     this.#pointEditComponent = new EditFormView();
-    console.log(this.#pointEditComponent);
     this.#pointEditComponent.setFormSubmitHandler(this.#formSubmitHandler);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
-
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
@@ -51,7 +48,7 @@ export default class PointNewPresenter {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      {id: nanoid(), ...point},
+      { ...point, id: nanoid()},
     );
     this.destroy();
   };

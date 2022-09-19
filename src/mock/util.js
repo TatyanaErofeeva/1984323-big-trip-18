@@ -30,7 +30,6 @@ const isPastDate = (date) => dayjs().isAfter(dayjs(date));
 
 const getDateDiff = (start, finish) => {
   const diffTimeInMs = finish.diff(start);
-  //console.log(diffTimeInMs);
   const timeDuration = dayjs.duration(diffTimeInMs);
   const months = timeDuration.months();
   const days = timeDuration.days();
