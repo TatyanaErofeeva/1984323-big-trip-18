@@ -35,7 +35,7 @@ const generateDate = () => {
 const filter = {
   [FILTER_TYPE.EVERYTHING]: (points) => points.slice(),
   [FILTER_TYPE.FUTURE]: (points) => points.filter((point) => isFutureDate(point.dates.start)),
-  [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dates.finish)),
+  [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dates.start)),
 };
 
 const ROUTE_POINT_TYPES = {

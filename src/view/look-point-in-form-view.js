@@ -23,7 +23,6 @@ const createNewPointTemplate = (point) => {
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
-
   return (
     `<li class="trip-events__item">
       <div class="event">

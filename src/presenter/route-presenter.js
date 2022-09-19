@@ -20,8 +20,9 @@ export default class RoutePresenter {
   #pointNewPresenter = null;
   #tripList = new PointsListView();
   #noPointComponent = null;
-  #currentSortType = SortData[0];
+  #currentSortType = SortData[0].id;
   #filterType = FILTER_TYPE.EVERYTHING;
+  //#sortComponent = new SortView();
 
   init = (pointsContainer, pointsModel, filterModel) => {
     this.#pointsContainer = pointsContainer;
@@ -56,14 +57,9 @@ export default class RoutePresenter {
   }
 
   createPoint = (callback) => {
-    this.#currentSortType = SortData[0];
+    this.#currentSortType = SortData[0].id;
     this.#filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPE.EVERYTHING);
     this.#pointNewPresenter.init(callback);
-  };
-
-  #handleModeChange = () => {
-    this.#pointNewPresenter.destroy();
-    this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -80,45 +76,10 @@ export default class RoutePresenter {
     }
   };
 
-  #handleModelEvent = (updateType, data) => {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data);
-        break;
-      case UpdateType.MINOR:
-        this.#clearRoute();
-        this.#renderRoute();
-        break;
-      case UpdateType.MAJOR:
-        this.#clearRoute({resetSortType: true});
-        this.#renderRoute();
-        break;
-    }
-  };
-
-
-  #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) {
-      return;
-    }
-
-    this.#currentSortType = sortType;
-
-    this.#clearRoute();
-    this.#renderRoute();
-  };
-
   #renderSort = () => {
-    this.#sortComponent = new SortView(SortData);
-    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+    this.#sortComponent = new SortView(SortData, this.#currentSortType);
     render( this.#sortComponent, tripEventsContainer, RenderPosition.AFTERBEGIN );
-
-  };
-
-  #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#tripList.element, this.#handleViewAction, this.#handleModeChange);
-    pointPresenter.init(point);
-    this.#pointPresenter.set(point.id, pointPresenter);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #clearRoute = ({resetSortType = false} = {}) => {
@@ -133,8 +94,14 @@ export default class RoutePresenter {
     }
 
     if (resetSortType) {
-      this.#currentSortType = SortData[0];
+      this.#currentSortType = SortData[0].id;
     }
+  };
+
+  #renderPoint = (point) => {
+    const pointPresenter = new PointPresenter(this.#tripList.element, this.#handleViewAction, this.#handleModeChange);
+    pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #renderPoints = () =>{
@@ -160,5 +127,36 @@ export default class RoutePresenter {
 
     this.#renderSort();
     this.#renderPoints();
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#pointPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearRoute({resetSortType: true});
+        this.#renderRoute();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearRoute({resetSortType: true});
+        this.#renderRoute();
+        break;
+    }
+  };
+
+  #handleModeChange = () => {
+    this.#pointNewPresenter.destroy();
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#currentSortType = sortType;
+    this.#clearRoute();
+    this.#renderRoute();
   };
 }

@@ -30,11 +30,13 @@ const isPastDate = (date) => dayjs().isAfter(dayjs(date));
 
 const getDateDiff = (start, finish) => {
   const diffTimeInMs = finish.diff(start);
+  //console.log(diffTimeInMs);
   const timeDuration = dayjs.duration(diffTimeInMs);
+  const months = timeDuration.months();
   const days = timeDuration.days();
   const hours = timeDuration.hours();
   const minutes = timeDuration.minutes();
-  const time = `${(days > 0) ? `${addZeroToNumber(days) }D ` : ''}${(hours > 0) ? `${addZeroToNumber(hours) }H ` : ''}${(minutes > 0) ? `${addZeroToNumber(minutes) }M` : ''}`;
+  const time = `${(months > 0) ? `${addZeroToNumber(months) }D ` : ''}${(days > 0) ? `${addZeroToNumber(days) }D ` : ''}${(hours > 0) ? `${addZeroToNumber(hours) }H ` : ''}${(minutes > 0) ? `${addZeroToNumber(minutes) }M` : ''}`;
   return time;
 };
 

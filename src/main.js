@@ -29,5 +29,6 @@ render (new SiteMenuView(), headerMain, RenderPosition.AFTERBEGIN);
 render (newPointButtonComponent, headerMain);
 
 newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+
 boardPresenter.init( tripEvents, pointsModel, filterModel);
 filterPresenter.init();
