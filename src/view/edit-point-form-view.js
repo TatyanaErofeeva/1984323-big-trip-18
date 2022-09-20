@@ -8,7 +8,7 @@ import he from 'he';
 
 const BLANK_POINT = {
   id: null,
-  basePrice: 20,
+  basePrice: null,
   dates: '',
   destination: DESTINATIONS[0],
   type: Object.values(ROUTE_POINT_TYPES)[0],
@@ -49,10 +49,10 @@ const generateOffersList = (events, _state) => {
 
 const generateTimeData = (start, finish) => `<div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatToDateWithTime(start)}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatToDateWithTime(start)}" required>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatToDateWithTime(finish)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatToDateWithTime(finish)}" required>
           </div>`;
 
 const generateEventTypeList = (eventsObject, iconSrc, id, eventType) => {
@@ -105,7 +105,7 @@ const createEditTemplate = (_state = {}) => {
         <label class="event__label  event__type-output" for="event-destination-${id}">
           ${name}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-${id}">
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
         ${generateDistDatalist(newPointList)}
         </datalist>
@@ -117,17 +117,18 @@ const createEditTemplate = (_state = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" required>
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
+      <button class="event__reset-btn" type="reset">${id === null ? 'Cancel' : 'Delete'}</button>
+      ${id !== null ? `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
-      </button>
+      </button>` : ''}
     </header>
     <section class="event__details">
     ${generateOffersList(offers, _state)}
-      <section class="event__section  event__section--destination">
+    ${destination ?
+      `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destination.description}</p>
         <div class="event__photos-container">
@@ -135,7 +136,7 @@ const createEditTemplate = (_state = {}) => {
           ${generatePhoto(destination.pictures)}
           </div>
         </div>
-      </section>
+      </section>` : ''}
     </section>
   </form>
 </li>`
@@ -289,7 +290,8 @@ export default class EditFormView extends AbstractStatefulView {
         enableTime: true,
         'time_24hr': true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._state.start,
+        minDate: 'today',
+        defaultDate: this._state.dates.start,
         onChange: this.#startDateChangeHandler,
       }
     );
@@ -302,8 +304,7 @@ export default class EditFormView extends AbstractStatefulView {
         enableTime: true,
         'time_24hr': true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._state.finish,
-        minDate: this._state.start,
+        minDate: 'today',
         onChange: this.#endDateChangeHandler,
       }
     );

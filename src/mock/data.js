@@ -22,7 +22,7 @@ let startTripDate = dayjs().subtract(5, 'day').startOf('date');
 
 const generateDate = () => {
   const MAX_TRIP_TIME = 6;
-  const tripTime = getRandomInteger(1, MAX_TRIP_TIME) * 30;
+  const tripTime = getRandomInteger(1, MAX_TRIP_TIME);
   const start = startTripDate;
   const finish = startTripDate.add(tripTime, 'days');
   startTripDate = finish;
@@ -35,7 +35,7 @@ const generateDate = () => {
 const filter = {
   [FILTER_TYPE.EVERYTHING]: (points) => points.slice(),
   [FILTER_TYPE.FUTURE]: (points) => points.filter((point) => isFutureDate(point.dates.start)),
-  [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dates.start)),
+  [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dates.finish)),
 };
 
 const ROUTE_POINT_TYPES = {

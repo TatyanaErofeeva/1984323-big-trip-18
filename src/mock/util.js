@@ -35,7 +35,7 @@ const getDateDiff = (start, finish) => {
   const days = timeDuration.days();
   const hours = timeDuration.hours();
   const minutes = timeDuration.minutes();
-  const time = `${(months > 0) ? `${addZeroToNumber(months) }D ` : ''}${(days > 0) ? `${addZeroToNumber(days) }D ` : ''}${(hours > 0) ? `${addZeroToNumber(hours) }H ` : ''}${(minutes > 0) ? `${addZeroToNumber(minutes) }M` : ''}`;
+  const time = `${(months > 0) ? `${addZeroToNumber(months) }M ` : ''}${(days >= 0) ? `${addZeroToNumber(days) }D ` : ''}${(hours >= 0) ? `${addZeroToNumber(hours) }H ` : ''}${(minutes >= 0) ? `${addZeroToNumber(minutes) }M` : ''}`;
   return time;
 };
 
