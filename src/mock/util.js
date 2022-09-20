@@ -51,5 +51,6 @@ const getSumElements = (elements) => {
   );
   return sumElements;
 };
+const dateString = (start, finish) => (dayjs(start).format('MMM') === dayjs(finish).format('MMM')) ? `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD')}` : `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD MMM')}`;
 
-export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements};
+export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString};

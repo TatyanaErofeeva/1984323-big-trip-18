@@ -1,21 +1,42 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { formatToDateWithTime} from '../mock/util.js';
+//import { formatToDateWithTime} from '../mock/util.js';
 import { DESTINATIONS, directions } from '../mock/destination.js';
 import { ROUTE_POINT_TYPES } from '../mock/data.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-const BLANK_POINT = {
+/*const BLANK_POINT = {
   id: null,
   basePrice: null,
-  dates: '',
-  destination: DESTINATIONS[0],
+  dates: {
+    start: new Date(),
+    finish: '',
+  },
+  destination: '',
   type: Object.values(ROUTE_POINT_TYPES)[0],
   offers: [],
   description: '',
   photos: [],
   isFavorite: false,
+};*/
+
+const BLANK_POINT = {
+  basePrice: null,
+  dates: {
+    start: new Date(),
+    finish: '',
+  },
+  destination : {
+    id: null,
+    description: '',
+    name: '',
+    pictures: [],
+  },
+  offers:[],
+  type: Object.values(ROUTE_POINT_TYPES)[0],
+  isFavorite: false,
+  description: '',
 };
 
 const generateDistDatalist = (destinations) => {
@@ -49,10 +70,10 @@ const generateOffersList = (events, _state) => {
 
 const generateTimeData = (start, finish) => `<div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatToDateWithTime(start)}" required>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start}" required readonly>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatToDateWithTime(finish)}" required>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish}" required readonly>
           </div>`;
 
 const generateEventTypeList = (eventsObject, iconSrc, id, eventType) => {
@@ -94,7 +115,6 @@ const createEditTemplate = (_state = {}) => {
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
   const newPointList = directions.filter((element) => element !== destination.name);
-
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -105,7 +125,7 @@ const createEditTemplate = (_state = {}) => {
         <label class="event__label  event__type-output" for="event-destination-${id}">
           ${name}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-${id}" required>
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
         ${generateDistDatalist(newPointList)}
         </datalist>
@@ -218,10 +238,23 @@ export default class EditFormView extends AbstractStatefulView {
 
   #changeDestination = (evt) => {
     evt.preventDefault();
+    if (evt.target.value) {
+      this.updateElement({
+        destination: DESTINATIONS.find((element) => element.name === evt.target.value)
+      });
+      return;
+    }
+    this.updateElement(
+      BLANK_POINT.destination,
+    );
+  };
+
+  /*#changeDestination = (evt) => {
+    evt.preventDefault();
     this.updateElement({
       destination: DESTINATIONS.find((element) => element.name === evt.target.value)
     });
-  };
+  };*/
 
   #changePrice = (evt) => {
     evt.preventDefault();
@@ -305,6 +338,7 @@ export default class EditFormView extends AbstractStatefulView {
         'time_24hr': true,
         dateFormat: 'd/m/y H:i',
         minDate: 'today',
+        defaultDate: this._state.dates.finish,
         onChange: this.#endDateChangeHandler,
       }
     );
