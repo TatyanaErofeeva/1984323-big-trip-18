@@ -1,5 +1,5 @@
-import SiteMenuView from './view/site-menu-view .js';
-import { render, RenderPosition } from './framework/render.js';
+//import SiteMenuView from './view/site-menu-view .js';
+import { render} from './framework/render.js';
 import RoutePresenter from './presenter/route-presenter.js';
 import PointsModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
@@ -25,7 +25,7 @@ const handleNewPointButtonClick = () => {
   newPointButtonComponent.element.disabled = true;
 };
 
-render (new SiteMenuView(), headerMain, RenderPosition.AFTERBEGIN);
+
 render (newPointButtonComponent, headerMain);
 
 newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
