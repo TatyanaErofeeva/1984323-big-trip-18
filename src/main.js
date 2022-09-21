@@ -30,5 +30,5 @@ render (newPointButtonComponent, headerMain);
 
 newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
 
-boardPresenter.init( tripEvents, pointsModel, filterModel);
+boardPresenter.init(headerMain, tripEvents, pointsModel, filterModel);
 filterPresenter.init();

@@ -19,7 +19,7 @@ export default class RoutePresenter {
   #sortComponent = null;
   #filterModel = null;
   #menuComponent = null;
-  #infoContainer = null;
+  #headerContainer = null;
   #pointPresenter = new Map();
   #pointNewPresenter = null;
   #tripList = new PointsListView();
@@ -27,10 +27,11 @@ export default class RoutePresenter {
   #currentSortType = SortData[0].id;
   #filterType = FILTER_TYPE.EVERYTHING;
 
-  init = (pointsContainer, pointsModel, filterModel) => {
+  init = (headerMain, pointsContainer, pointsModel, filterModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#headerContainer = headerMain;
     this.#pointNewPresenter = new PointNewPresenter(pointsContainer, this.#handleViewAction);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -85,11 +86,9 @@ export default class RoutePresenter {
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
-  #renderSiteMenu = (pointsModel,infoContainer) => {
-    this.#pointsModel = pointsModel;
-    this.#infoContainer = infoContainer;
-    this.#menuComponent = new SiteMenuView(this.#menuComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
-    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+  #renderSiteMenu = () => {
+    this.#menuComponent = new SiteMenuView(this.points);
+    render(this.#menuComponent, this.#headerContainer, RenderPosition.AFTERBEGIN);
   };
 
   #clearRoute = ({resetSortType = false} = {}) => {
@@ -134,7 +133,7 @@ export default class RoutePresenter {
       this.#renderNoPoints();
       return;
     }
-   // render (new SiteMenuView(), headerMain, RenderPosition.AFTERBEGIN);
+    this.#renderSiteMenu();
     this.#renderSort();
     this.#renderPoints();
   };
