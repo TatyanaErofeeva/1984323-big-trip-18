@@ -105,6 +105,8 @@ export default class RoutePresenter {
     if (resetSortType) {
       this.#currentSortType = SortData[0].id;
     }
+
+    remove (this.#menuComponent);
   };
 
   #renderPoint = (point) => {
@@ -113,7 +115,7 @@ export default class RoutePresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
-  #renderPoints = () =>{
+  #renderPoints = () => {
     this.points.forEach(( point ) => {
       this.#renderPoint(point);
     });
