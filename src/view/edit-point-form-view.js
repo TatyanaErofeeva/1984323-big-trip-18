@@ -1,19 +1,25 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { formatToDateWithTime} from '../mock/util.js';
+//import { formatToDateWithTime} from '../mock/util.js';
 import { DESTINATIONS, directions } from '../mock/destination.js';
 import { ROUTE_POINT_TYPES } from '../mock/data.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 const BLANK_POINT = {
-  id: null,
   basePrice: null,
-  dates: '',
-  destination:'',
+  dates: {
+    start: new Date(),
+    finish: '',
+  },
+  destination : {
+    id: null,
+    description: '',
+    name: '',
+    pictures: [],
+  },
+  offers:[],
   type: Object.values(ROUTE_POINT_TYPES)[0],
-  offers: [],
-  description: '',
-  photos: [],
   isFavorite: false,
 };
 
@@ -48,10 +54,10 @@ const generateOffersList = (events, _state) => {
 
 const generateTimeData = (start, finish) => `<div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatToDateWithTime(start)}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start}" required readonly>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatToDateWithTime(finish)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish}" required readonly>
           </div>`;
 
 const generateEventTypeList = (eventsObject, iconSrc, id, eventType) => {
@@ -104,7 +110,7 @@ const createEditTemplate = (_state = {}) => {
         <label class="event__label  event__type-output" for="event-destination-${id}">
           ${name}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${id}">
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
         ${generateDistDatalist(newPointList)}
         </datalist>
@@ -116,25 +122,26 @@ const createEditTemplate = (_state = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" required>
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
+      <button class="event__reset-btn" type="reset">${destination.id === null ? 'Cancel' : 'Delete'}</button>
+      ${destination.id !== null ? `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
-      </button>
+      </button>` : ''}
     </header>
     <section class="event__details">
     ${generateOffersList(offers, _state)}
-      <section class="event__section  event__section--destination">
+    ${(destination.description || destination.pictures.length) ?
+      `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
-        <div class="event__photos-container">
+        ${destination.description ? `<p class="event__destination-description">${destination.description}</p>` : '' }
+        ${destination.pictures.length > 0 ? `<div class="event__photos-container">
           <div class="event__photos-tape">
           ${generatePhoto(destination.pictures)}
           </div>
-        </div>
-      </section>
+        </div>` : ''}
+     </section>` : ''}
     </section>
   </form>
 </li>`
@@ -183,7 +190,9 @@ export default class EditFormView extends AbstractStatefulView {
 
   setFormClickHandler = (callback) => {
     this._callback.click = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClickHandler);
+    const editHandler = this.element.querySelector('.event__rollup-btn');
+    if(editHandler){
+      editHandler.addEventListener('click', this.#formClickHandler);}
   };
 
   #formClickHandler = (evt) => {
@@ -214,10 +223,23 @@ export default class EditFormView extends AbstractStatefulView {
 
   #changeDestination = (evt) => {
     evt.preventDefault();
+    if (evt.target.value) {
+      this.updateElement({
+        destination: DESTINATIONS.find((element) => element.name === evt.target.value)
+      });
+      return;
+    }
+    this.updateElement(
+      BLANK_POINT.destination,
+    );
+  };
+
+  /*#changeDestination = (evt) => {
+    evt.preventDefault();
     this.updateElement({
       destination: DESTINATIONS.find((element) => element.name === evt.target.value)
     });
-  };
+  };*/
 
   #changePrice = (evt) => {
     evt.preventDefault();
@@ -238,6 +260,17 @@ export default class EditFormView extends AbstractStatefulView {
     this.#setEndDatepicker();
     this.setFormClickHandler(this._callback.click);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+  };
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(EditFormView.parseStateToPoint(this._state));
   };
 
   #setInnerHandlers = () => {
@@ -275,7 +308,8 @@ export default class EditFormView extends AbstractStatefulView {
         enableTime: true,
         'time_24hr': true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._state.start,
+        minDate: 'today',
+        defaultDate: this._state.dates.start,
         onChange: this.#startDateChangeHandler,
       }
     );
@@ -288,8 +322,8 @@ export default class EditFormView extends AbstractStatefulView {
         enableTime: true,
         'time_24hr': true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._state.finish,
-        minDate: this._state.start,
+        minDate: 'today',
+        defaultDate: this._state.dates.finish,
         onChange: this.#endDateChangeHandler,
       }
     );

@@ -18,13 +18,13 @@ const getObjectsArray = (obj, MAX_NUMBER_ELEMENTS) => {
   return newArray;
 };
 
-let startTripDate = dayjs().add(0, 'day').startOf('date');
+let startTripDate = dayjs().subtract(5, 'day').startOf('date');
 
 const generateDate = () => {
   const MAX_TRIP_TIME = 6;
-  const tripTime = getRandomInteger(1, MAX_TRIP_TIME) * 30;
+  const tripTime = getRandomInteger(1, MAX_TRIP_TIME);
   const start = startTripDate;
-  const finish = startTripDate.add(tripTime, 'minutes');
+  const finish = startTripDate.add(tripTime, 'days');
   startTripDate = finish;
   return {
     start:  start.toISOString(),
@@ -34,8 +34,8 @@ const generateDate = () => {
 
 const filter = {
   [FILTER_TYPE.EVERYTHING]: (points) => points.slice(),
-  [FILTER_TYPE.FUTURE]: (points) => points.filter((point) => isFutureDate(point.dateFrom, point.dateFrom)),
-  [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dateTo)),
+  [FILTER_TYPE.FUTURE]: (points) => points.filter((point) => isFutureDate(point.dates.start)),
+  [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dates.finish)),
 };
 
 const ROUTE_POINT_TYPES = {
@@ -90,13 +90,12 @@ const ROUTE_POINT_TYPES = {
 const generatePoint = () => {
   const type = ROUTE_POINT_TYPES[getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES))];
   const typeOfStringOffers = getRandomArray(getRandomInteger(0, type.offers.length),type.offers.map(({id}) => id));
-  const destinationObject = () => getRandomArrayElement(DESTINATIONS);
 
   return {
     id: nanoid(),
     basePrice: getRandomInteger(10, 40),
     dates: generateDate(),
-    destination:destinationObject(),
+    destination:getRandomArrayElement(DESTINATIONS),
     type,
     offers: typeOfStringOffers,
     isFavorite: Boolean(getRandomInteger()),

@@ -5,4 +5,5 @@ const generateFilter = () => Object.keys(filter).map(
     name: filterName,
   }),
 );
+
 export {generateFilter};

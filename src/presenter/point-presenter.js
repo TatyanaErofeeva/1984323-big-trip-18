@@ -2,6 +2,7 @@ import {render, replace, remove} from '../framework/render.js';
 import PointView from '../view/look-point-in-form-view.js';
 import EditFormView from '../view/edit-point-form-view.js';
 import { KEYS } from '../mock/const.js';
+import { UserAction, UpdateType } from '../mock/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -39,6 +40,7 @@ export default class PointPresenter {
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#formSubmitHandler);
     this.#pointEditComponent.setFormClickHandler(this.#formClickHandler);
+    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render( this.#pointComponent, this.#pointListContainer );
@@ -100,12 +102,34 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite},
+    );
   };
 
-  #formSubmitHandler = (point) => {
-    this.#changeData(point);
+  #formSubmitHandler = (update) => {
+    const isMinorUpdate = this.#point.type !== update.type ||
+    this.#point.destination.name !== update.destination.name;
+
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update
+    );
     this.#replaceFormToCard();
   };
+
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+    //this.#replaceFormToCard();
+  };
 }
+
+export {isEscKey};
 
