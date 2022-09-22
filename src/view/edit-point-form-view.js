@@ -6,21 +6,6 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-/*const BLANK_POINT = {
-  id: null,
-  basePrice: null,
-  dates: {
-    start: new Date(),
-    finish: '',
-  },
-  destination: '',
-  type: Object.values(ROUTE_POINT_TYPES)[0],
-  offers: [],
-  description: '',
-  photos: [],
-  isFavorite: false,
-};*/
-
 const BLANK_POINT = {
   basePrice: null,
   dates: {
@@ -36,7 +21,6 @@ const BLANK_POINT = {
   offers:[],
   type: Object.values(ROUTE_POINT_TYPES)[0],
   isFavorite: false,
-  description: '',
 };
 
 const generateDistDatalist = (destinations) => {
@@ -115,6 +99,7 @@ const createEditTemplate = (_state = {}) => {
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
   const newPointList = directions.filter((element) => element !== destination.name);
+
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -140,23 +125,23 @@ const createEditTemplate = (_state = {}) => {
         <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" required>
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">${id === null ? 'Cancel' : 'Delete'}</button>
-      ${id !== null ? `<button class="event__rollup-btn" type="button">
+      <button class="event__reset-btn" type="reset">${destination.id === null ? 'Cancel' : 'Delete'}</button>
+      ${destination.id !== null ? `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>` : ''}
     </header>
     <section class="event__details">
     ${generateOffersList(offers, _state)}
-    ${destination ?
+    ${(destination.description || destination.pictures.length) ?
       `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
-        <div class="event__photos-container">
+        ${destination.description ? `<p class="event__destination-description">${destination.description}</p>` : '' }
+        ${destination.pictures.length > 0 ? `<div class="event__photos-container">
           <div class="event__photos-tape">
           ${generatePhoto(destination.pictures)}
           </div>
-        </div>
-      </section>` : ''}
+        </div>` : ''}
+     </section>` : ''}
     </section>
   </form>
 </li>`
