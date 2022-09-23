@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -27,6 +26,7 @@ const addZeroToNumber = (number) => (number < 10) ? `0${number}` : number;
 const isFutureDate = (dateFrom) => dayjs().isBefore(dayjs(dateFrom)) || dayjs().isSame(dayjs(dateFrom), 'day');
 
 const isPastDate = (date) => dayjs().isAfter(dayjs(date));
+
 
 const getDateDiff = (start, finish) => {
   const diffTimeInMs = finish.diff(start);

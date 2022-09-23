@@ -1,5 +1,6 @@
 import SortView from '../view/sort-view.js';
 import EmptyListOfPoints from '../view/no-points-view.js';
+import LoadingView from '../view/loading-view.js';
 import PointsListView from '../view/points-list-view.js';
 import {render, RenderPosition, remove} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
@@ -23,9 +24,21 @@ export default class RoutePresenter {
   #pointPresenter = new Map();
   #pointNewPresenter = null;
   #tripList = new PointsListView();
+  #loadingComponent = new LoadingView();
   #noPointComponent = null;
   #currentSortType = SortData[0].id;
   #filterType = FILTER_TYPE.EVERYTHING;
+  #isLoading = true;
+
+  get offers(){
+    const offers = this.#pointsModel.offers;
+    return offers;
+  }
+
+  get destinations(){
+    const destinations = this.#pointsModel.destinations;
+    return destinations;
+  }
 
   init = (headerMain, pointsContainer, pointsModel, filterModel) => {
     this.#pointsContainer = pointsContainer;
@@ -42,7 +55,8 @@ export default class RoutePresenter {
 
   get points() {
     this.#filterType = this.#filterModel.filter;
-    const points = this.#pointsModel.points;
+    //const points = this.#pointsModel.points;
+    const points = this.#buildPoints(this.#pointsModel.points, this.#pointsModel.destinations, this.#pointsModel.offers);
     const filteredPoints = filter[this.#filterType](points);
 
     if ( this.#currentSortType === SortType.TIME ) {
@@ -60,10 +74,24 @@ export default class RoutePresenter {
     return filteredPoints;
   }
 
+
   createPoint = (callback) => {
     this.#currentSortType = SortData[0].id;
     this.#filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPE.EVERYTHING);
     this.#pointNewPresenter.init(callback);
+  };
+
+  #buildPoints = (points, destinations) => {
+    const collectedPoints = [];
+    points.forEach((point) => {
+      const destination = destinations.find(
+        (item) => item.id === point.destination
+      );
+      collectedPoints.push({ ...point, destination});
+    });
+    console.log(collectedPoints);
+
+    return collectedPoints;
   };
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -97,6 +125,7 @@ export default class RoutePresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointComponent){
       remove(this.#noPointComponent);
@@ -105,7 +134,6 @@ export default class RoutePresenter {
     if (resetSortType) {
       this.#currentSortType = SortData[0].id;
     }
-
     remove (this.#menuComponent);
   };
 
@@ -121,12 +149,21 @@ export default class RoutePresenter {
     });
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#pointsContainer);
+  };
+
   #renderNoPoints = () => {
     this.#noPointComponent = new EmptyListOfPoints(this.#filterType);
     render( this.#noPointComponent, this.#pointsContainer );
   };
 
   #renderRoute = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const points = this.points;
     const pointsCount = points.length;
     render( this.#tripList, this.#pointsContainer );
@@ -141,16 +178,22 @@ export default class RoutePresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
+    console.log(updateType);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearRoute({resetSortType: true});
+        this.#clearRoute();
         this.#renderRoute();
         break;
       case UpdateType.MAJOR:
         this.#clearRoute({resetSortType: true});
+        this.#renderRoute();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderRoute();
         break;
     }

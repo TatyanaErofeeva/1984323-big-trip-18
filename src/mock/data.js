@@ -86,11 +86,9 @@ const ROUTE_POINT_TYPES = {
   },
 };
 
-
 const generatePoint = () => {
   const type = ROUTE_POINT_TYPES[getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES))];
   const typeOfStringOffers = getRandomArray(getRandomInteger(0, type.offers.length),type.offers.map(({id}) => id));
-
   return {
     id: nanoid(),
     basePrice: getRandomInteger(10, 40),
@@ -101,4 +99,5 @@ const generatePoint = () => {
     isFavorite: Boolean(getRandomInteger()),
   };
 };
+
 export {generatePoint, filter, getObjectsArray, ROUTE_POINT_TYPES};

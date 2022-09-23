@@ -5,6 +5,7 @@ import { ROUTE_POINT_TYPES } from '../mock/data.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
+import { formatToDateWithTime } from '../mock/util.js';
 
 const BLANK_POINT = {
   basePrice: null,
@@ -54,10 +55,10 @@ const generateOffersList = (events, _state) => {
 
 const generateTimeData = (start, finish) => `<div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start}" required readonly>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start ? formatToDateWithTime(start) : ''}" required>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish}" required readonly>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish ? formatToDateWithTime(finish) : ''}" required>
           </div>`;
 
 const generateEventTypeList = (eventsObject, iconSrc, id, eventType) => {
@@ -234,13 +235,6 @@ export default class EditFormView extends AbstractStatefulView {
     );
   };
 
-  /*#changeDestination = (evt) => {
-    evt.preventDefault();
-    this.updateElement({
-      destination: DESTINATIONS.find((element) => element.name === evt.target.value)
-    });
-  };*/
-
   #changePrice = (evt) => {
     evt.preventDefault();
     this._setState({
@@ -287,7 +281,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.updateElement({
       dates: {
         ...this._state.dates,
-        start: [userDate],
+        start: userDate,
       }
     });
   };
@@ -296,7 +290,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.updateElement({
       dates: {
         ...this._state.dates,
-        finish: [userDate],
+        finish: userDate,
       }
     });
   };
@@ -307,8 +301,8 @@ export default class EditFormView extends AbstractStatefulView {
       {
         enableTime: true,
         'time_24hr': true,
-        dateFormat: 'd/m/y H:i',
-        minDate: 'today',
+        maxDate: this._state.dates.finish,
+        allowInput: true,
         defaultDate: this._state.dates.start,
         onChange: this.#startDateChangeHandler,
       }
@@ -321,8 +315,8 @@ export default class EditFormView extends AbstractStatefulView {
       {
         enableTime: true,
         'time_24hr': true,
-        dateFormat: 'd/m/y H:i',
-        minDate: 'today',
+        minDate: this._state.dates.start,
+        allowInput: true,
         defaultDate: this._state.dates.finish,
         onChange: this.#endDateChangeHandler,
       }

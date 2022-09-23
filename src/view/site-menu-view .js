@@ -1,12 +1,14 @@
 import AbstractView from '../framework/view/abstract-view';
 import { dateString } from '../mock/util';
 
+
 const createSiteMenuTemplate = (points) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
   const start = firstPoint['dates']['start'];
   const finish = lastPoint['dates']['start'];
   const pointsCost = points.reduce((prev, current) => prev + current.basePrice, 0);
+
   const calcOffersPrice = () => {
     let offersPointPrice = 0;
     points.forEach((point) =>
@@ -20,7 +22,7 @@ const createSiteMenuTemplate = (points) => {
   const getDestinationString = () => {
     let str = '';
     if (points.length > 3) {
-      str = `${points[0].destination.name} &mdash; . . . &mdash; ${points[points.length - 1]}`;
+      str = `${points[0].destination.name} &mdash; . . . &mdash; ${points[points.length - 1].destination.name}`;
     } else if (points.length === 3) {
       str = `${points[0].destination.name} &mdash; ${points[1].destination.name} &mdash; ${points[2].destination.name}`;
     } else if (points.length === 2) {
