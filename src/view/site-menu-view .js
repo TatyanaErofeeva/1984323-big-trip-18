@@ -12,10 +12,13 @@ const createSiteMenuTemplate = (points) => {
   const calcOffersPrice = () => {
     let offersPointPrice = 0;
     points.forEach((point) =>
-      point.offers.forEach((offerId) => {
-        offersPointPrice += point.type.offers.find((offer) => offer.id === offerId).price;
+      point.offers.forEach((offerElem) => {
+        if (point.offers.length > 0){
+          offersPointPrice += point.type.offers.find((offer) => offer.title === offerElem).price;
+        }
       })
     );
+
     return offersPointPrice;
   };
   const fullTripCost = pointsCost + calcOffersPrice();

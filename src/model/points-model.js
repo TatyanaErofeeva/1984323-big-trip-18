@@ -1,4 +1,5 @@
 import { UpdateType } from '../mock/const.js';
+import {getСheckedOffers, getAllOffersByPoints, ucFirstLetter } from '../mock/util.js';
 import Observable from '../framework/observable.js';
 
 export default class PointsModel extends Observable {
@@ -32,13 +33,15 @@ export default class PointsModel extends Observable {
   init = async () => {
     try {
       const points = await this.#pointsApiService.points;
-      this.#points = points.map(this.#adaptToClient);
       this.#offers = await this.#offersApiService.offers;
       this.#destinations = await this.#destinationApiService.destinations;
+      this.#points = points.map(this.#adaptToClient);
+      console.log(this.#points);
     } catch(err) {
       this.#points = [];
       this.#offers = [];
       this.#destinations = [];
+      throw err;
     }
     this._notify(UpdateType.INIT);
   };
@@ -88,16 +91,32 @@ export default class PointsModel extends Observable {
     return id;
   }
 
+  getDestinationById(pointDestination){
+    const destination = this.#destinations.find((it) => it.id === pointDestination);
+    return destination;
+  }
+
 
   #adaptToClient = (point) => {
-    const adaptedPoint = {...point,
-      basePrice: point['base_price'],
-      dates:{
-        start: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
-        finish: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
-      },
-      isFavorite: point['is_favorite'],
-    };
+    console.log({point});
+    const typeOffers = getСheckedOffers(point, this.#offers);
+    const adaptedPoint = Object.assign(
+      point, {
+        basePrice: point['base_price'],
+        dates: {
+          start: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
+          finish: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
+        },
+        destination: this.destinations.find((destination) => destination.id === point.destination),
+        type: {
+          iconSrc: `../img/icons/${point.type}.png`,
+          name: ucFirstLetter(point.type),
+          offers:typeOffers,
+        },
+        offers: getAllOffersByPoints(point.offers, typeOffers)
+      }
+    );
+
 
     // Ненужные ключи мы удаляем
     delete adaptedPoint['base_price'];
@@ -105,7 +124,7 @@ export default class PointsModel extends Observable {
     delete adaptedPoint['date_to'];
     delete adaptedPoint['is_favorite'];
 
-    console.log(point);
+    //console.log(point);
 
     return adaptedPoint;
   };

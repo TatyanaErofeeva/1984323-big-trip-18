@@ -52,5 +52,39 @@ const getSumElements = (elements) => {
   return sumElements;
 };
 const dateString = (start, finish) => (dayjs(start).format('MMM') === dayjs(finish).format('MMM')) ? `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD')}` : `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD MMM')}`;
+const toCamelCase = (str) => [...str].map((element, index, arr) => {
+  if (index > 0 && arr[index - 1] === ' ' || arr[index - 1] === '-') {
+    return element.toUpperCase();
+  }
+  return element.toLowerCase();
+}).filter((element) => element !== ' ' && element !== '-').join('');
 
-export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString};
+
+/*const offersToClientView = (offers) => {
+  const clientOffers = [];
+  if (offers && offers.length > 0) {
+    offers.forEach((offer) => {
+      clientOffers.push(getOfferToClient(offer));
+    });
+  }
+
+  return clientOffers;
+};*/
+
+const getСheckedOffers = (point, offers) => {
+  const checkedOffers = offers.find((offer) => offer.type === point.type).offers
+    .filter((offer) => point.offers.includes(offer.id));
+  return checkedOffers;
+};
+
+const getAllOffersByPoints = (pointOffers, typeOffers) => pointOffers.map((pointOffer) => typeOffers.find((typeOfferElem) => typeOfferElem.id === pointOffer).title);
+
+const ucFirstLetter = (str) => {
+  if (!str) {
+    return str;
+  }
+
+  return str[0].toUpperCase() + str.slice(1);
+};
+
+export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString, toCamelCase,getСheckedOffers, getAllOffersByPoints, ucFirstLetter};

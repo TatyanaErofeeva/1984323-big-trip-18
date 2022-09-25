@@ -55,8 +55,8 @@ export default class RoutePresenter {
 
   get points() {
     this.#filterType = this.#filterModel.filter;
-    //const points = this.#pointsModel.points;
-    const points = this.#buildPoints(this.#pointsModel.points, this.#pointsModel.destinations, this.#pointsModel.offers);
+    const points = this.#pointsModel.points;
+    //const points = this.#buildPoints(this.#pointsModel.points, this.#pointsModel.destinations, this.#pointsModel.offers);
     const filteredPoints = filter[this.#filterType](points);
 
     if ( this.#currentSortType === SortType.TIME ) {

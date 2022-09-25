@@ -55,8 +55,9 @@ const DESTINATIONS = [
   },
 ];
 
-//const directions = DESTINATIONS.map(({name}) => name);
-const directions = (destinationNames) => destinationNames.map(({name}) => name);
+const directions = DESTINATIONS.map(({name}) => name);
+
+
 
 export {DESTINATIONS, directions};
 

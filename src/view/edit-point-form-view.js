@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 //import { formatToDateWithTime} from '../mock/util.js';
-import { DESTINATIONS, directions } from '../mock/destination.js';
+import { DESTINATIONS, directions} from '../mock/destination.js';
 import { ROUTE_POINT_TYPES } from '../mock/data.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -99,8 +99,9 @@ const createEditTemplate = (_state = {}) => {
   const {id, dates, type, destination, basePrice} = _state;
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
-  const newPointList = directions.filter((element) => element !== destination.name);
-
+  //const newPointList = directions.filter((element) => element !== destination.name);
+  const a = this.#points.destination.map(({name}) => name);
+  const newPointList = a.filter((element) => element !== destination.name);
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
