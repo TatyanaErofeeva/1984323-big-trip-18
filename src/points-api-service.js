@@ -11,6 +11,16 @@ export default class PointsApiService extends ApiService {
       .then(ApiService.parseResponse);
   }
 
+  get destinations() {
+    return this._load({ url: 'destinations' })
+      .then(ApiService.parseResponse);
+  }
+
+  get offers() {
+    return this._load({ url: 'offers' })
+      .then(ApiService.parseResponse);
+  }
+
   updatePoint = async (point) => {
     const response = await this._load({
       url: `points/${point.id}`,
@@ -25,19 +35,27 @@ export default class PointsApiService extends ApiService {
   };
 
   #adaptToServer = (point) => {
-    const adaptedPoint = {...point,
-      'is_favorite': point.isFavorite,
-      'base_price': point.basePrice,
-      'date_from': point.start instanceof Date ? point.dueDate.toISOString() : null,
-      'date_to': point.finish instanceof Date ? point.dueDate.toISOString() : null,
-    };
+    console.log({point});
+
+    const adaptedPoint = Object.assign(
+      point, {
+        'base_price': Number(point.basePrice),
+        'date_from': new Date(point.dates.start).toISOString(),
+        'date_to': new Date(point.dates.finish).toISOString(),
+        destination: point.destination.id,
+        type: point.type.name.toLowerCase(),
+        offers: point.offers.map((pointOffer) => point.type.offers.find((typeOfferElem) => typeOfferElem.title === pointOffer).id),
+        'is_favorite': point.isFavorite,
+      }
+    );
 
     // Ненужные ключи мы удаляем
     delete adaptedPoint.isFavorite;
     delete adaptedPoint.basePrice;
-    delete adaptedPoint.start;
-    delete adaptedPoint.finish;
+    delete adaptedPoint.dates;
+    delete adaptedPoint.pointsModel;
 
+    console.log(adaptedPoint);
     return adaptedPoint;
   };
 }

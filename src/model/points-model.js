@@ -1,5 +1,5 @@
 import { UpdateType } from '../mock/const.js';
-import {getСheckedOffers, getAllOffersByPoints, ucFirstLetter } from '../mock/util.js';
+import {getСheckedOffers, getAllOffersByPoints, getUpperCaseFirstLetter } from '../mock/util.js';
 import Observable from '../framework/observable.js';
 
 export default class PointsModel extends Observable {
@@ -36,7 +36,6 @@ export default class PointsModel extends Observable {
       this.#offers = await this.#offersApiService.offers;
       this.#destinations = await this.#destinationApiService.destinations;
       this.#points = points.map(this.#adaptToClient);
-      console.log(this.#points);
     } catch(err) {
       this.#points = [];
       this.#offers = [];
@@ -53,13 +52,20 @@ export default class PointsModel extends Observable {
       throw new Error('Can\'t update unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      update,
-      ...this.#points.slice(index + 1),
-    ];
+    try {
+      const response = await this.#pointsApiService.updatePoint(update);
+      const updatedPoint = this.#adaptToClient(response);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        updatedPoint,
+        ...this.#points.slice(index + 1),
+      ];
 
-    this._notify(updateType, update);
+      this._notify(updateType, updatedPoint);
+
+    } catch(err) {
+      throw new Error('Can\'t update point');
+    }
   };
 
   addPoint = (updateType, update) => {
@@ -86,19 +92,7 @@ export default class PointsModel extends Observable {
     this._notify(updateType);
   };
 
-  getIdByDestination(destinationName) {
-    const {id} = this.#destinations.find((it) => it.name === destinationName);
-    return id;
-  }
-
-  getDestinationById(pointDestination){
-    const destination = this.#destinations.find((it) => it.id === pointDestination);
-    return destination;
-  }
-
-
   #adaptToClient = (point) => {
-    console.log({point});
     const typeOffers = getСheckedOffers(point, this.#offers);
     const adaptedPoint = Object.assign(
       point, {
@@ -110,10 +104,11 @@ export default class PointsModel extends Observable {
         destination: this.destinations.find((destination) => destination.id === point.destination),
         type: {
           iconSrc: `../img/icons/${point.type}.png`,
-          name: ucFirstLetter(point.type),
+          name: getUpperCaseFirstLetter(point.type),
           offers:typeOffers,
         },
-        offers: getAllOffersByPoints(point.offers, typeOffers)
+        offers: getAllOffersByPoints(point.offers, typeOffers),
+        isFavorite: point['is_favorite']
       }
     );
 
@@ -123,9 +118,7 @@ export default class PointsModel extends Observable {
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
     delete adaptedPoint['is_favorite'];
-
-    //console.log(point);
-
+console.log({adaptedPoint});
     return adaptedPoint;
   };
 }

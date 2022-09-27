@@ -34,6 +34,7 @@ export default class AbstractStatefulView extends AbstractView {
    * @param {Object} update Объект с обновлённой частью состояния
    */
   _setState = (update) => {
+    console.log({update});
     this._state = {...this._state, ...update};
   };
 

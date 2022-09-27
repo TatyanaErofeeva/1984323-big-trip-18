@@ -38,6 +38,8 @@ const filter = {
   [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dates.finish)),
 };
 
+
+
 const ROUTE_POINT_TYPES = {
   taxi: {
     name: 'Taxi',
@@ -85,6 +87,8 @@ const ROUTE_POINT_TYPES = {
     iconSrc: '../img/icons/restaurant.png',
   },
 };
+
+export const getRoutePointTypes = (_pointsModel) => ROUTE_POINT_TYPES;
 
 const generatePoint = () => {
   const type = ROUTE_POINT_TYPES[getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES))];

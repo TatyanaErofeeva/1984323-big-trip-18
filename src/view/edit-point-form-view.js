@@ -1,11 +1,9 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-//import { formatToDateWithTime} from '../mock/util.js';
-import { DESTINATIONS, directions} from '../mock/destination.js';
-import { ROUTE_POINT_TYPES } from '../mock/data.js';
+import { formatToDateWithTime} from '../mock/util.js';
+import { getRoutePointTypes } from '../mock/data.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
-import { formatToDateWithTime } from '../mock/util.js';
 
 const BLANK_POINT = {
   basePrice: null,
@@ -20,7 +18,7 @@ const BLANK_POINT = {
     pictures: [],
   },
   offers:[],
-  type: Object.values(ROUTE_POINT_TYPES)[0],
+  type: {},
   isFavorite: false,
 };
 
@@ -39,10 +37,12 @@ const generateOffersList = (events, _state) => {
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">`;
     events.forEach((element) => {
+      console.log(element.id);
+
       str += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" value = "${element.id}"  id="event-offer-${element.name}" type="checkbox" name="event-offer-${element.name}" ${_state.offers.includes(element.id) ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${element.name}">
-        <span class="event__offer-title">${element.name}</span>
+      <input class="event__offer-checkbox  visually-hidden" value = "${element.id}"  id="event-offer-${element.title}" type="checkbox" name="event-offer-${element.title}" ${_state.offers.includes(element.id) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${element.title}">
+        <span class="event__offer-title">${element.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${element.price}</span>
       </label>
@@ -50,6 +50,7 @@ const generateOffersList = (events, _state) => {
     });
     str += '</div></section>';
   }
+
   return str;
 };
 
@@ -96,17 +97,20 @@ const generatePhoto = (photosList) => {
 };
 
 const createEditTemplate = (_state = {}) => {
-  const {id, dates, type, destination, basePrice} = _state;
+  const {id, dates, type, destination, basePrice, pointsModel} = _state;
   const {iconSrc, name, offers} = type;
   const {start, finish} = dates;
-  //const newPointList = directions.filter((element) => element !== destination.name);
-  const a = this.#points.destination.map(({name}) => name);
-  const newPointList = a.filter((element) => element !== destination.name);
+  const directions = pointsModel.destinations.map((dest) => dest.name);
+  const newPointList = directions.filter((element) => element !== destination.name);
+  //console.log(type.offers);
+  console.log(pointsModel);
+  //console.log(pointsModel.offers);
+
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
-    ${generateEventTypeList(ROUTE_POINT_TYPES, iconSrc, id, name)}
+    ${generateEventTypeList(getRoutePointTypes(pointsModel), iconSrc, id, name)}
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-${id}">
@@ -153,9 +157,10 @@ export default class EditFormView extends AbstractStatefulView {
   #startDatepicker = null;
   #endDatepicker = null;
 
-  constructor(point = BLANK_POINT) {
+  constructor(point = BLANK_POINT, pointsModel) {
     super();
     this._state = EditFormView.parsePointToState(point);
+    this._state.pointsModel = pointsModel;
 
     this.#setInnerHandlers();
     this.#setStartDatepicker();
@@ -202,11 +207,11 @@ export default class EditFormView extends AbstractStatefulView {
     this._callback.click();
   };
 
-  #changeTypePoint = ( evt ) => {
+  #changeTypePoint = ( evt) => {
     evt.preventDefault();
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
-        type: ROUTE_POINT_TYPES[evt.target.value],
+        type: getRoutePointTypes(this._state.pointsModel)[evt.target.value],
         offers: []
       });
     }
@@ -227,7 +232,7 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     if (evt.target.value) {
       this.updateElement({
-        destination: DESTINATIONS.find((element) => element.name === evt.target.value)
+        destination: this._state.pointsModel.destinations.find((element) => element.name === evt.target.value)
       });
       return;
     }

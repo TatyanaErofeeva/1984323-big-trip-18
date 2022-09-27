@@ -56,7 +56,6 @@ export default class RoutePresenter {
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    //const points = this.#buildPoints(this.#pointsModel.points, this.#pointsModel.destinations, this.#pointsModel.offers);
     const filteredPoints = filter[this.#filterType](points);
 
     if ( this.#currentSortType === SortType.TIME ) {
@@ -79,19 +78,6 @@ export default class RoutePresenter {
     this.#currentSortType = SortData[0].id;
     this.#filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPE.EVERYTHING);
     this.#pointNewPresenter.init(callback);
-  };
-
-  #buildPoints = (points, destinations) => {
-    const collectedPoints = [];
-    points.forEach((point) => {
-      const destination = destinations.find(
-        (item) => item.id === point.destination
-      );
-      collectedPoints.push({ ...point, destination});
-    });
-    console.log(collectedPoints);
-
-    return collectedPoints;
   };
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -138,7 +124,7 @@ export default class RoutePresenter {
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#tripList.element, this.#handleViewAction, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.#tripList.element, this.#handleViewAction, this.#handleModeChange, this.#pointsModel);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };

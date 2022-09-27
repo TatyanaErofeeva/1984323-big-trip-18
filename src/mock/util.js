@@ -59,18 +59,6 @@ const toCamelCase = (str) => [...str].map((element, index, arr) => {
   return element.toLowerCase();
 }).filter((element) => element !== ' ' && element !== '-').join('');
 
-
-/*const offersToClientView = (offers) => {
-  const clientOffers = [];
-  if (offers && offers.length > 0) {
-    offers.forEach((offer) => {
-      clientOffers.push(getOfferToClient(offer));
-    });
-  }
-
-  return clientOffers;
-};*/
-
 const getСheckedOffers = (point, offers) => {
   const checkedOffers = offers.find((offer) => offer.type === point.type).offers
     .filter((offer) => point.offers.includes(offer.id));
@@ -79,7 +67,7 @@ const getСheckedOffers = (point, offers) => {
 
 const getAllOffersByPoints = (pointOffers, typeOffers) => pointOffers.map((pointOffer) => typeOffers.find((typeOfferElem) => typeOfferElem.id === pointOffer).title);
 
-const ucFirstLetter = (str) => {
+const getUpperCaseFirstLetter = (str) => {
   if (!str) {
     return str;
   }
@@ -87,4 +75,4 @@ const ucFirstLetter = (str) => {
   return str[0].toUpperCase() + str.slice(1);
 };
 
-export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString, toCamelCase,getСheckedOffers, getAllOffersByPoints, ucFirstLetter};
+export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString, toCamelCase,getСheckedOffers, getAllOffersByPoints, getUpperCaseFirstLetter};
