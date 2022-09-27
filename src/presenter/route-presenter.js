@@ -101,7 +101,7 @@ export default class RoutePresenter {
   };
 
   #renderSiteMenu = () => {
-    this.#menuComponent = new SiteMenuView(this.points);
+    this.#menuComponent = new SiteMenuView(this.points, this.#pointsModel);
     render(this.#menuComponent, this.#headerContainer, RenderPosition.AFTERBEGIN);
   };
 

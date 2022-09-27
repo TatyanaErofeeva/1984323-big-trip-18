@@ -33,7 +33,7 @@ export default class PointsModel extends Observable {
   init = async () => {
     try {
       const points = await this.#pointsApiService.points;
-      this.#offers = await this.#offersApiService.offers;
+      this.#offers = (await this.#offersApiService.offers);
       this.#destinations = await this.#destinationApiService.destinations;
       this.#points = points.map(this.#adaptToClient);
     } catch(err) {
@@ -93,6 +93,7 @@ export default class PointsModel extends Observable {
   };
 
   #adaptToClient = (point) => {
+    console.log(point);
     const typeOffers = getСheckedOffers(point, this.#offers);
     const adaptedPoint = Object.assign(
       point, {
@@ -102,11 +103,6 @@ export default class PointsModel extends Observable {
           finish: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
         },
         destination: this.destinations.find((destination) => destination.id === point.destination),
-        type: {
-          iconSrc: `../img/icons/${point.type}.png`,
-          name: getUpperCaseFirstLetter(point.type),
-          offers:typeOffers,
-        },
         offers: getAllOffersByPoints(point.offers, typeOffers),
         isFavorite: point['is_favorite']
       }
@@ -118,7 +114,11 @@ export default class PointsModel extends Observable {
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
     delete adaptedPoint['is_favorite'];
-console.log({adaptedPoint});
+
     return adaptedPoint;
   };
+
+  findOffersByType(typeName) {
+    return this.offers.find((offer) => offer.type === typeName);
+  }
 }

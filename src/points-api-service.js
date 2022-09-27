@@ -44,7 +44,7 @@ export default class PointsApiService extends ApiService {
         'date_to': new Date(point.dates.finish).toISOString(),
         destination: point.destination.id,
         type: point.type.name.toLowerCase(),
-        offers: point.offers.map((pointOffer) => point.type.offers.find((typeOfferElem) => typeOfferElem.title === pointOffer).id),
+        offers: point.offers.map((pointOffer) => point.type.offers.find((typeOfferElem) => typeOfferElem.id === pointOffer).id),
         'is_favorite': point.isFavorite,
       }
     );

@@ -40,7 +40,7 @@ const filter = {
 
 
 
-const ROUTE_POINT_TYPES = {
+/*const ROUTE_POINT_TYPES = {
   taxi: {
     name: 'Taxi',
     offers: getObjectsArray(OFFERS_LIST, 5),
@@ -86,22 +86,23 @@ const ROUTE_POINT_TYPES = {
     offers: getObjectsArray(OFFERS_LIST, 5),
     iconSrc: '../img/icons/restaurant.png',
   },
-};
+};*/
 
-export const getRoutePointTypes = (_pointsModel) => ROUTE_POINT_TYPES;
+//export const getRoutePointTypes = (_pointsModel) => ROUTE_POINT_TYPES;
+
 
 const generatePoint = () => {
-  const type = ROUTE_POINT_TYPES[getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES))];
-  const typeOfStringOffers = getRandomArray(getRandomInteger(0, type.offers.length),type.offers.map(({id}) => id));
+  //const type = ROUTE_POINT_TYPES[getRandomArrayElement(Object.keys(ROUTE_POINT_TYPES))];
+  //const typeOfStringOffers = getRandomArray(getRandomInteger(0, type.offers.length),type.offers.map(({id}) => id));
   return {
     id: nanoid(),
     basePrice: getRandomInteger(10, 40),
     dates: generateDate(),
     destination:getRandomArrayElement(DESTINATIONS),
-    type,
+    //type,
     offers: typeOfStringOffers,
     isFavorite: Boolean(getRandomInteger()),
   };
 };
 
-export {generatePoint, filter, getObjectsArray, ROUTE_POINT_TYPES};
+export {generatePoint, filter, getObjectsArray};

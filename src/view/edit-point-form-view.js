@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatToDateWithTime} from '../mock/util.js';
-import { getRoutePointTypes } from '../mock/data.js';
+//import { getRoutePointTypes } from '../mock/data.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
@@ -37,8 +37,6 @@ const generateOffersList = (events, _state) => {
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">`;
     events.forEach((element) => {
-      console.log(element.id);
-
       str += `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" value = "${element.id}"  id="event-offer-${element.title}" type="checkbox" name="event-offer-${element.title}" ${_state.offers.includes(element.id) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${element.title}">
@@ -62,8 +60,9 @@ const generateTimeData = (start, finish) => `<div class="event__field-group  eve
             <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish ? formatToDateWithTime(finish) : ''}" required>
           </div>`;
 
-const generateEventTypeList = (eventsObject, iconSrc, id, eventType) => {
+const generateEventTypeList = (eventsObject, id, eventType) => {
   const eventsList = Object.keys(eventsObject);
+  //const eventsList = pointsModel.map((type) => type);
   let events = '';
   eventsList.forEach((element) => {
     events += `<div class="event__type-item">
@@ -74,7 +73,7 @@ const generateEventTypeList = (eventsObject, iconSrc, id, eventType) => {
   return `<div class="event__type-wrapper">
                       <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                         <span class="visually-hidden">Choose event type</span>
-                        <img class="event__type-icon" width="17" height="17" src=${iconSrc} alt="Event type icon">
+                        <img class="event__type-icon" width="17" height="17" src="...img/icons/${type}.png" alt="Event type icon">
                       </label>
                       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
                       <div class="event__type-list">
@@ -96,25 +95,23 @@ const generatePhoto = (photosList) => {
   return str;
 };
 
-const createEditTemplate = (_state = {}) => {
-  const {id, dates, type, destination, basePrice, pointsModel} = _state;
-  const {iconSrc, name, offers} = type;
+const createEditTemplate = (_state = {}, viewData) => {
+  const {id, dates, destination, basePrice, pointsModel} = _state;
+  //const {name, offers} = type;
+  const {destinations,offers, point, type} = viewData;
   const {start, finish} = dates;
   const directions = pointsModel.destinations.map((dest) => dest.name);
   const newPointList = directions.filter((element) => element !== destination.name);
-  //console.log(type.offers);
-  console.log(pointsModel);
-  //console.log(pointsModel.offers);
 
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
-    ${generateEventTypeList(getRoutePointTypes(pointsModel), iconSrc, id, name)}
+    ${generateEventTypeList(viewData, id, type)}
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-${id}">
-          ${name}
+          ${type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
@@ -157,11 +154,9 @@ export default class EditFormView extends AbstractStatefulView {
   #startDatepicker = null;
   #endDatepicker = null;
 
-  constructor(point = BLANK_POINT, pointsModel) {
+  constructor(point = BLANK_POINT, viewData) {
     super();
     this._state = EditFormView.parsePointToState(point);
-    this._state.pointsModel = pointsModel;
-
     this.#setInnerHandlers();
     this.#setStartDatepicker();
     this.#setEndDatepicker();

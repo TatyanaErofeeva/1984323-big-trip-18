@@ -7,7 +7,7 @@ const generateOffersListForPoint = (offersList, point) => {
   let str = '';
   if (offersList.length > 0) {
     offersList.forEach((element) => {
-      if (point.offers.includes(element.title)){
+      if (point.offers.includes(element.id)){
         str += `<li class="event__offer">
                 <span class="event__offer-title">${element.title}</span>&plus;&euro;&nbsp;
                 <span class="event__offer-price">${element.price}</span>

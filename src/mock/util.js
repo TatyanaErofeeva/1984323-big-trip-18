@@ -65,7 +65,7 @@ const getСheckedOffers = (point, offers) => {
   return checkedOffers;
 };
 
-const getAllOffersByPoints = (pointOffers, typeOffers) => pointOffers.map((pointOffer) => typeOffers.find((typeOfferElem) => typeOfferElem.id === pointOffer).title);
+const getAllOffersByPoints = (pointOffers, typeOffers) => pointOffers.map((pointOffer) => typeOffers.find((typeOfferElem) => typeOfferElem.id === pointOffer).id);
 
 const getUpperCaseFirstLetter = (str) => {
   if (!str) {

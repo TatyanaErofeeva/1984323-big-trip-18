@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view';
 import { dateString } from '../mock/util';
 
 
-const createSiteMenuTemplate = (points) => {
+const createSiteMenuTemplate = (points, pointsModel) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
   const start = firstPoint['dates']['start'];
@@ -14,7 +14,7 @@ const createSiteMenuTemplate = (points) => {
     points.forEach((point) =>
       point.offers.forEach((offerElem) => {
         if (point.offers.length > 0){
-          offersPointPrice += point.type.offers.find((offer) => offer.title === offerElem).price;
+          offersPointPrice += pointsModel.findOffersByType(point.type).offers.find((offer) => offer.id === offerElem).price;
         }
       })
     );
@@ -50,13 +50,15 @@ const createSiteMenuTemplate = (points) => {
 export default class SiteMenuView extends AbstractView {
 
   #points;
+  #pointsModel = null;
 
-  constructor(points) {
+  constructor(points, pointsModel) {
     super();
     this.#points = points;
+    this.#pointsModel = pointsModel;
   }
 
   get template() {
-    return createSiteMenuTemplate(this.#points);
+    return createSiteMenuTemplate(this.#points, this.#pointsModel);
   }
 }
