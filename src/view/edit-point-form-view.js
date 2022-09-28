@@ -61,19 +61,21 @@ const generateTimeData = (start, finish) => `<div class="event__field-group  eve
           </div>`;
 
 const generateEventTypeList = (eventsObject, id, eventType) => {
-  const eventsList = Object.keys(eventsObject);
-  //const eventsList = pointsModel.map((type) => type);
+  console.log(eventType);
+  //const eventsList = Object.keys(eventsObject);
+  const eventsList = eventsObject.offers.map(({type}) => type);
+  //console.log(eventsList);
   let events = '';
   eventsList.forEach((element) => {
     events += `<div class="event__type-item">
-      <input id="event-type-${eventsObject[element].name.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${(eventType === eventsObject[element].name) ? 'checked' : ''}>
-      <label class="event__type-label  event__type-label--${eventsObject[element].name.toLowerCase()}" for="event-type-${eventsObject[element].name.toLowerCase()}-${id}">${eventsObject[element].name}</label>
+      <input id="event-type-${element}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${(eventType === element) ? 'checked' : ''}>
+      <label class="event__type-label  event__type-label--${element}" for="event-type-${element}-${id}">${element.toUpperCase()}</label>
     </div>`;
   });
   return `<div class="event__type-wrapper">
                       <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                         <span class="visually-hidden">Choose event type</span>
-                        <img class="event__type-icon" width="17" height="17" src="...img/icons/${type}.png" alt="Event type icon">
+                        <img class="event__type-icon" width="17" height="17" src="...img/icons/${eventType}.png" alt="Event type icon">
                       </label>
                       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
                       <div class="event__type-list">
@@ -99,8 +101,9 @@ const createEditTemplate = (_state = {}, viewData) => {
   const {id, dates, destination, basePrice, pointsModel} = _state;
   //const {name, offers} = type;
   const {destinations,offers, point, type} = viewData;
+  console.log({viewData});
   const {start, finish} = dates;
-  const directions = pointsModel.destinations.map((dest) => dest.name);
+  const directions = viewData.destinations.map((dest) => dest.name);
   const newPointList = directions.filter((element) => element !== destination.name);
 
   return (
@@ -153,17 +156,19 @@ const createEditTemplate = (_state = {}, viewData) => {
 export default class EditFormView extends AbstractStatefulView {
   #startDatepicker = null;
   #endDatepicker = null;
+  #viewData = null;
 
   constructor(point = BLANK_POINT, viewData) {
     super();
     this._state = EditFormView.parsePointToState(point);
+    this.#viewData = viewData;
     this.#setInnerHandlers();
     this.#setStartDatepicker();
     this.#setEndDatepicker();
   }
 
   get template() {
-    return createEditTemplate(this._state);
+    return createEditTemplate(this._state, this.#viewData);
   }
 
   removeElement = () => {

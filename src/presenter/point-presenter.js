@@ -41,7 +41,7 @@ export default class PointPresenter {
     this.#pointEditComponent = new EditFormView(point, {
       offers: this.#pointsModel.offers,
       destinations: this.#pointsModel.destinations,
-      point: this.point,
+      point: this.#point,
       type: this.#pointsModel.findOffersByType(this.#point.type)
     });
 
