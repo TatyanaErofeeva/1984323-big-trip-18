@@ -164,7 +164,6 @@ export default class RoutePresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenter.get(data.id).init(data);

@@ -28,7 +28,7 @@ export default class PointPresenter {
     this.#changeData = changeData;
     this.#changeMode = changeMode;
     this.#pointsModel = pointsModel;
-    console.log(this.#pointsModel);
+    //console.log(this.#pointsModel);
   }
 
   init = (point) => {

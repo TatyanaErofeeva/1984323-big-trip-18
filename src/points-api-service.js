@@ -35,7 +35,7 @@ export default class PointsApiService extends ApiService {
   };
 
   #adaptToServer = (point) => {
-    console.log({point});
+    //console.log({point});
 
     const adaptedPoint = Object.assign(
       point, {
@@ -55,7 +55,7 @@ export default class PointsApiService extends ApiService {
     delete adaptedPoint.dates;
     delete adaptedPoint.pointsModel;
 
-    console.log(adaptedPoint);
+    //console.log(adaptedPoint);
     return adaptedPoint;
   };
 }

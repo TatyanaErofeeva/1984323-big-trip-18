@@ -31,20 +31,20 @@ const generateDistDatalist = (destinations) => {
 
 const generateOffersList = (events, _state) => {
   let str = '';
-  const getOffers = events.map(({offers}) => offers);
-  console.log(_state.selectedType);
-  if (getOffers.length > 0) {
+  const offers = events.map(({offers}) => offers);
+  //console.log({offers});
+  if (offers.length > 0) {
     str += `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">`;
-    getOffers.forEach((element) => {
-      //console.log(element);
+    offers.forEach((offer) => {
+      console.log({offer});
       str += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" value = "${element.id}"  id="event-offer-${element.title}" type="checkbox" name="event-offer-${element.title}" ${_state.offers.includes(element.id) ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${element.title}">
-        <span class="event__offer-title">${element.title}</span>
+      <input class="event__offer-checkbox  visually-hidden" value = "${offer.id}"  id="event-offer-${offer.title}" type="checkbox" name="event-offer-${offer.title}" ${_state.offers.includes(offer.id) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${offer.title}">
+        <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${element.price}</span>
+        <span class="event__offer-price">${offer.price}</span>
       </label>
     </div>`;
     });
@@ -96,7 +96,7 @@ const generatePhoto = (photosList) => {
   return str;
 };
 
-const createEditTemplate = (_state = {}, offers, destinations, type, selectedType) => {
+const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
   const {id, dates, destination, basePrice} = _state;
   const {start, finish} = dates;
   const directions = destinations.map((dest) => dest.name);
@@ -106,12 +106,13 @@ const createEditTemplate = (_state = {}, offers, destinations, type, selectedTyp
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
-    ${generateEventTypeList(offers, id, type)}
+    ${generateEventTypeList(offers, id, selectedType)}
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-${id}">
-          ${type.type}
+          ${selectedType.type}
         </label>
+
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
         ${generateDistDatalist(newPointList)}
@@ -154,19 +155,16 @@ export default class EditFormView extends AbstractStatefulView {
   #endDatepicker = null;
   #destinations = [];
   #offers = [];
-  #selectedType = null;
 
   constructor({
     point = BLANK_POINT,
     offers,
     destinations,
-    type
   }) {
     super();
     this._state = EditFormView.parsePointToState(point);
     this.#offers = offers;
     this.#destinations = destinations;
-    this.#selectedType = type;
 
     this.#setInnerHandlers();
     this.#setStartDatepicker();
@@ -178,7 +176,7 @@ export default class EditFormView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditTemplate(this._state, this.#offers, this.#destinations, this.#selectedType);
+    return createEditTemplate(this._state, this.#offers, this.#destinations, this.selectedType);
   }
 
   removeElement = () => {
@@ -219,9 +217,11 @@ export default class EditFormView extends AbstractStatefulView {
 
   #changeTypePoint = ( evt) => {
     evt.preventDefault();
+    console.log(this.#offers, evt.target.value, this.#offers.find((element) => element.type === evt.target.value).offers);
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
-        type: getRoutePointTypes(this._state.pointsModel)[evt.target.value],
+        //type: ROUTE_POINT_TYPES[evt.target.value],
+        type: evt.target.value,
         offers: []
       });
     }

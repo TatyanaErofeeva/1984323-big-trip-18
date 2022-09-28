@@ -93,7 +93,7 @@ export default class PointsModel extends Observable {
   };
 
   #adaptToClient = (point) => {
-    console.log(point);
+   // console.log(point);
     const typeOffers = getСheckedOffers(point, this.#offers);
     const adaptedPoint = Object.assign(
       point, {

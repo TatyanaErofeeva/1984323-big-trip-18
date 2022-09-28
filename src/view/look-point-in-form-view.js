@@ -30,7 +30,7 @@ const createNewPointTemplate = (point, offers, destinations) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="../img/icons/${point.type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${name} ${destination.name}</h3>
+        <h3 class="event__title">${type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dayjs(start)}">${formatToTime(start)}</time>
@@ -64,27 +64,24 @@ export default class PointView extends AbstractView {
   #point = null;
   #destinations = [];
   #offers = [];
-  #selectedType = null;
 
   constructor({
     point,
     offers,
     destinations,
-    type
   }) {
     super();
     this.#point = point;
     this.#offers = offers;
     this.#destinations = destinations;
-    this.#selectedType = type;
   }
 
-  get selectedType() {
+  /*get selectedType() {
     return this.#offers.find((offer) => offer.type === this._state.type);
-  }
+  }*/
 
   get template() {
-    return createNewPointTemplate(this.#point, this.#offers, this.#destinations, this.#selectedType);
+    return createNewPointTemplate(this.#point, this.#offers, this.#destinations, this.selectedType);
   }
 
   setEditFormClickHandler = (callback) => {
