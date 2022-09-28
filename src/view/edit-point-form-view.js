@@ -1,6 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { formatToDateWithTime} from '../mock/util.js';
-//import { getRoutePointTypes } from '../mock/data.js';
+import { formatToDateWithTime, getUpperCaseFirstLetter} from '../mock/util.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
@@ -32,11 +31,14 @@ const generateDistDatalist = (destinations) => {
 
 const generateOffersList = (events, _state) => {
   let str = '';
-  if (events.length > 0) {
+  const getOffers = events.map(({offers}) => offers);
+  console.log(_state.selectedType);
+  if (getOffers.length > 0) {
     str += `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">`;
-    events.forEach((element) => {
+    getOffers.forEach((element) => {
+      //console.log(element);
       str += `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" value = "${element.id}"  id="event-offer-${element.title}" type="checkbox" name="event-offer-${element.title}" ${_state.offers.includes(element.id) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${element.title}">
@@ -61,21 +63,18 @@ const generateTimeData = (start, finish) => `<div class="event__field-group  eve
           </div>`;
 
 const generateEventTypeList = (eventsObject, id, eventType) => {
-  console.log(eventType);
-  //const eventsList = Object.keys(eventsObject);
-  const eventsList = eventsObject.offers.map(({type}) => type);
-  //console.log(eventsList);
+  const eventsList = eventsObject.map(({type}) => type);
   let events = '';
   eventsList.forEach((element) => {
     events += `<div class="event__type-item">
       <input id="event-type-${element}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${(eventType === element) ? 'checked' : ''}>
-      <label class="event__type-label  event__type-label--${element}" for="event-type-${element}-${id}">${element.toUpperCase()}</label>
+      <label class="event__type-label  event__type-label--${element}" for="event-type-${element}-${id}">${getUpperCaseFirstLetter(element)}</label>
     </div>`;
   });
   return `<div class="event__type-wrapper">
                       <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                         <span class="visually-hidden">Choose event type</span>
-                        <img class="event__type-icon" width="17" height="17" src="...img/icons/${eventType}.png" alt="Event type icon">
+                        <img class="event__type-icon" width="17" height="17" src="../img/icons/${eventType.type}.png" alt="Event type icon">
                       </label>
                       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
                       <div class="event__type-list">
@@ -97,24 +96,21 @@ const generatePhoto = (photosList) => {
   return str;
 };
 
-const createEditTemplate = (_state = {}, viewData) => {
-  const {id, dates, destination, basePrice, pointsModel} = _state;
-  //const {name, offers} = type;
-  const {destinations,offers, point, type} = viewData;
-  console.log({viewData});
+const createEditTemplate = (_state = {}, offers, destinations, type, selectedType) => {
+  const {id, dates, destination, basePrice} = _state;
   const {start, finish} = dates;
-  const directions = viewData.destinations.map((dest) => dest.name);
+  const directions = destinations.map((dest) => dest.name);
   const newPointList = directions.filter((element) => element !== destination.name);
 
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
-    ${generateEventTypeList(viewData, id, type)}
+    ${generateEventTypeList(offers, id, type)}
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-${id}">
-          ${type}
+          ${type.type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
@@ -156,19 +152,33 @@ const createEditTemplate = (_state = {}, viewData) => {
 export default class EditFormView extends AbstractStatefulView {
   #startDatepicker = null;
   #endDatepicker = null;
-  #viewData = null;
+  #destinations = [];
+  #offers = [];
+  #selectedType = null;
 
-  constructor(point = BLANK_POINT, viewData) {
+  constructor({
+    point = BLANK_POINT,
+    offers,
+    destinations,
+    type
+  }) {
     super();
     this._state = EditFormView.parsePointToState(point);
-    this.#viewData = viewData;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#selectedType = type;
+
     this.#setInnerHandlers();
     this.#setStartDatepicker();
     this.#setEndDatepicker();
   }
 
+  get selectedType() {
+    return this.#offers.find((offer) => offer.type === this._state.type);
+  }
+
   get template() {
-    return createEditTemplate(this._state, this.#viewData);
+    return createEditTemplate(this._state, this.#offers, this.#destinations, this.#selectedType);
   }
 
   removeElement = () => {

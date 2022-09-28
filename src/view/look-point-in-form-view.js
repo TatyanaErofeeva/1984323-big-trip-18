@@ -15,21 +15,20 @@ const generateOffersListForPoint = (offersList, point) => {
       }
     });
   }
-
   return str;
 };
 
-const createNewPointTemplate = (point) => {
-  const {dates, type, destination, isFavorite, basePrice} = point;
-  const {iconSrc, name, offers} = type;
+const createNewPointTemplate = (point, offers, destinations) => {
+  const {dates,type, destination, isFavorite, basePrice} = point;
   const {start, finish} = dates;
+
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
   return (
     `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="${formatToFullDate(start)}">${formatToDateMonthsAndDay(start)}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="${iconSrc}" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="../img/icons/${point.type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${name} ${destination.name}</h3>
         <div class="event__schedule">
@@ -63,14 +62,29 @@ const createNewPointTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #destinations = [];
+  #offers = [];
+  #selectedType = null;
 
-  constructor(point) {
+  constructor({
+    point,
+    offers,
+    destinations,
+    type
+  }) {
     super();
     this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#selectedType = type;
+  }
+
+  get selectedType() {
+    return this.#offers.find((offer) => offer.type === this._state.type);
   }
 
   get template() {
-    return createNewPointTemplate(this.#point);
+    return createNewPointTemplate(this.#point, this.#offers, this.#destinations, this.#selectedType);
   }
 
   setEditFormClickHandler = (callback) => {
