@@ -4,13 +4,9 @@ import dayjs from 'dayjs';
 import { formatToDateMonthsAndDay, formatToFullDate, formatToTime } from '../mock/util.js';
 
 const generateOffersListForPoint = (offers, point) => {
-  console.log(offers);
-  const offersList = offers.map(({offers}) => offers);
-  //console.log(offersList);
   let str = '';
   if (offers.length > 0) {
     offers.forEach((element) => {
-      //console.log(element);
       if (point.offers.includes(element.id)){
         str += `<li class="event__offer">
                 <span class="event__offer-title">${element.title}</span>&plus;&euro;&nbsp;

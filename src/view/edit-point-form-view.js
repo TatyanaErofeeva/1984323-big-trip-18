@@ -205,8 +205,8 @@ export default class EditFormView extends AbstractPointView {
     if (evt.target.classList.contains('event__offer-checkbox')) {
       this._setState({
         offers: evt.target.checked
-          ? [...this._state.offers, evt.target.value]
-          : this._state.offers.filter(( item ) => item !== evt.target.value),
+          ? [...this._state.offers, Number(evt.target.value)]
+          : this._state.offers.filter(( item ) => item !== Number(evt.target.value)),
       });
     }
   };

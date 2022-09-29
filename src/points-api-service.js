@@ -35,8 +35,6 @@ export default class PointsApiService extends ApiService {
   };
 
   #adaptToServer = (point) => {
-    //console.log({point});
-
     const adaptedPoint = {
       ...point,
       'base_price': Number(point.basePrice),
@@ -52,7 +50,6 @@ export default class PointsApiService extends ApiService {
     delete adaptedPoint.dates;
     delete adaptedPoint.pointsModel;
 
-    //console.log(adaptedPoint);
     return adaptedPoint;
   };
 }
