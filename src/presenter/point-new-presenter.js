@@ -3,43 +3,49 @@ import EditFormView from '../view/edit-point-form-view.js';
 import { UserAction, UpdateType } from '../mock/const.js';
 import { nanoid } from 'nanoid';
 import { isEscKey } from './point-presenter.js';
+import { BLANK_POINT } from '../view/abstract-point-view.js';
 
 
 export default class PointNewPresenter {
   #pointListContainer = null;
   #changeData = null;
-  #pointEditComponent = null;
+  #pointNewEditComponent = null;
   #destroyCallback = null;
+  #pointsModel = null;
 
-  constructor(pointListContainer, changeData) {
+  constructor(pointListContainer, changeData, pointsModel) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
+    this.#pointsModel = pointsModel;
   }
 
   init = (callback) => {
     this.#destroyCallback = callback;
 
-    if (this.#pointEditComponent !== null) {
+    if (this.#pointNewEditComponent !== null) {
       return;
     }
 
-    this.#pointEditComponent = new EditFormView();
-    this.#pointEditComponent.setFormSubmitHandler(this.#formSubmitHandler);
-    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
+    this.#pointNewEditComponent = new EditFormView(BLANK_POINT, {
+      offers: this.#pointsModel.offers,
+      destinations: this.#pointsModel.destinations
+    });
+    this.#pointNewEditComponent.setFormSubmitHandler(this.#formSubmitHandler);
+    this.#pointNewEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
-    render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
+    render(this.#pointNewEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
   destroy = () => {
-    if (this.#pointEditComponent === null) {
+    if (this.#pointNewEditComponent === null) {
       return;
     }
 
     this.#destroyCallback?.();
 
-    remove(this.#pointEditComponent);
-    this.#pointEditComponent = null;
+    remove(this.#pointNewEditComponent);
+    this.#pointNewEditComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };

@@ -135,7 +135,7 @@ export default class EditFormView extends AbstractPointView {
   #startDatepicker = null;
   #endDatepicker = null;
 
-  constructor(point = BLANK_POINT,{offers, destinations}) {
+  constructor(point,{offers, destinations}) {
     super({offers, destinations});
     this._state = EditFormView.parsePointToState(point);
 

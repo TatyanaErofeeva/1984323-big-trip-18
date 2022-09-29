@@ -35,7 +35,7 @@ export default class RoutePresenter {
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#headerContainer = headerMain;
-    this.#pointNewPresenter = new PointNewPresenter(this.#tripList.element, this.#handleViewAction);
+    this.#pointNewPresenter = new PointNewPresenter(this.#tripList.element, this.#handleViewAction, this.#pointsModel);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
