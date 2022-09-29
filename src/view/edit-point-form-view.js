@@ -31,15 +31,17 @@ const generateDistDatalist = (destinations) => {
 
 const generateOffersList = (events, _state) => {
   let str = '';
-  const offers = events.map(({offers}) => offers);
-  //console.log({offers});
-  if (offers.length > 0) {
+  //console.log(events);
+  const offersArray = events.map(({offers}) => offers);
+  if (offersArray.length > 0) {
     str += `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">`;
-    offers.forEach((offer) => {
-      console.log({offer});
-      str += `<div class="event__offer-selector">
+    offersArray.forEach((offers) => {
+      //console.log(offersArray);
+      offers.forEach((offer) => {
+        console.log(_state.offers);
+        str += `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" value = "${offer.id}"  id="event-offer-${offer.title}" type="checkbox" name="event-offer-${offer.title}" ${_state.offers.includes(offer.id) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${offer.title}">
         <span class="event__offer-title">${offer.title}</span>
@@ -47,6 +49,7 @@ const generateOffersList = (events, _state) => {
         <span class="event__offer-price">${offer.price}</span>
       </label>
     </div>`;
+      });
     });
     str += '</div></section>';
   }
@@ -98,6 +101,7 @@ const generatePhoto = (photosList) => {
 
 const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
   const {id, dates, destination, basePrice} = _state;
+  //console.log({destinations});
   const {start, finish} = dates;
   const directions = destinations.map((dest) => dest.name);
   const newPointList = directions.filter((element) => element !== destination.name);
@@ -217,10 +221,8 @@ export default class EditFormView extends AbstractStatefulView {
 
   #changeTypePoint = ( evt) => {
     evt.preventDefault();
-    console.log(this.#offers, evt.target.value, this.#offers.find((element) => element.type === evt.target.value).offers);
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
-        //type: ROUTE_POINT_TYPES[evt.target.value],
         type: evt.target.value,
         offers: []
       });
@@ -242,7 +244,7 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     if (evt.target.value) {
       this.updateElement({
-        destination: this._state.pointsModel.destinations.find((element) => element.name === evt.target.value)
+        destination: this.#destinations.find((element) => element.name === evt.target.value)
       });
       return;
     }
