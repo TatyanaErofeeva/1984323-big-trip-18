@@ -146,6 +146,10 @@ export default class EditFormView extends AbstractPointView {
     this.#setEndDatepicker();
   }
 
+  get selectedType() {
+    return this.pointType(this._state.type);
+  }
+
   get template() {
     return createEditTemplate(this._state, this.offers, this.destinations, this.selectedType);
   }

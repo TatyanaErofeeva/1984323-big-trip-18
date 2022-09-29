@@ -38,8 +38,8 @@ export default class AbstractPointView extends AbstractStatefulView {
     return this.#destinations;
   }
 
-  get selectedType() {
-    return this.#offers.find((offer) => offer.type === this._state.type);
+  pointType(type) {
+    return this.#offers.find((offer) => offer.type === type);
   }
 
   get template () {

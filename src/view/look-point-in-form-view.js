@@ -8,8 +8,8 @@ const generateOffersListForPoint = (offers, point) => {
   const offersList = offers.map(({offers}) => offers);
   //console.log(offersList);
   let str = '';
-  if (offersList.length > 0) {
-    offersList.forEach((element) => {
+  if (offers.length > 0) {
+    offers.forEach((element) => {
       //console.log(element);
       if (point.offers.includes(element.id)){
         str += `<li class="event__offer">
@@ -25,7 +25,6 @@ const generateOffersListForPoint = (offers, point) => {
 const createNewPointTemplate = (point, offers, destinations, selectedType) => {
   const {dates,type, destination, isFavorite, basePrice} = point;
   const {start, finish} = dates;
-  console.log(point);
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
   return (
     `<li class="trip-events__item">
@@ -48,7 +47,7 @@ const createNewPointTemplate = (point, offers, destinations, selectedType) => {
                 </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-        ${generateOffersListForPoint(selectedType, point)}
+        ${generateOffersListForPoint(selectedType.offers, point)}
         </ul>
         <button class="event__favorite-btn ${favorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -72,8 +71,12 @@ export default class PointView extends AbstractPointView {
     this.#point = point;
   }
 
+  get selectedType() {
+    return this.pointType(this.#point.type);
+  }
+
   get template() {
-    return createNewPointTemplate(this.point, this.offers, this.destinations, this.selectedType);
+    return createNewPointTemplate(this.#point, this.offers, this.destinations, this.selectedType);
   }
 
   setEditFormClickHandler = (callback) => {
