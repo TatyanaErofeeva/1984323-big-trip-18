@@ -1,12 +1,16 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractPointView from './abstract-point-view';
 import {getDateDiff} from '../mock/util.js';
 import dayjs from 'dayjs';
 import { formatToDateMonthsAndDay, formatToFullDate, formatToTime } from '../mock/util.js';
 
-const generateOffersListForPoint = (offersList, point) => {
+const generateOffersListForPoint = (offers, point) => {
+  console.log(offers);
+  const offersList = offers.map(({offers}) => offers);
+  //console.log(offersList);
   let str = '';
   if (offersList.length > 0) {
     offersList.forEach((element) => {
+      //console.log(element);
       if (point.offers.includes(element.id)){
         str += `<li class="event__offer">
                 <span class="event__offer-title">${element.title}</span>&plus;&euro;&nbsp;
@@ -18,10 +22,10 @@ const generateOffersListForPoint = (offersList, point) => {
   return str;
 };
 
-const createNewPointTemplate = (point, offers, destinations) => {
+const createNewPointTemplate = (point, offers, destinations, selectedType) => {
   const {dates,type, destination, isFavorite, basePrice} = point;
   const {start, finish} = dates;
-
+  console.log(point);
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
   return (
     `<li class="trip-events__item">
@@ -44,7 +48,7 @@ const createNewPointTemplate = (point, offers, destinations) => {
                 </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-        ${generateOffersListForPoint(offers, point)}
+        ${generateOffersListForPoint(selectedType, point)}
         </ul>
         <button class="event__favorite-btn ${favorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -60,28 +64,16 @@ const createNewPointTemplate = (point, offers, destinations) => {
   );
 };
 
-export default class PointView extends AbstractView {
+export default class PointView extends AbstractPointView {
   #point = null;
-  #destinations = [];
-  #offers = [];
 
-  constructor({
-    point,
-    offers,
-    destinations,
-  }) {
-    super();
+  constructor(point, {offers, destinations}) {
+    super({offers, destinations});
     this.#point = point;
-    this.#offers = offers;
-    this.#destinations = destinations;
   }
 
-  /*get selectedType() {
-    return this.#offers.find((offer) => offer.type === this._state.type);
-  }*/
-
   get template() {
-    return createNewPointTemplate(this.#point, this.#offers, this.#destinations, this.selectedType);
+    return createNewPointTemplate(this.point, this.offers, this.destinations, this.selectedType);
   }
 
   setEditFormClickHandler = (callback) => {

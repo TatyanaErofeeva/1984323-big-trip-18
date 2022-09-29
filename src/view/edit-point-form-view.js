@@ -1,25 +1,11 @@
-import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import AbstractPointView from './abstract-point-view.js';
+import { BLANK_POINT } from './abstract-point-view.js';
 import { formatToDateWithTime, getUpperCaseFirstLetter} from '../mock/util.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-const BLANK_POINT = {
-  basePrice: null,
-  dates: {
-    start: new Date(),
-    finish: '',
-  },
-  destination : {
-    id: null,
-    description: '',
-    name: '',
-    pictures: [],
-  },
-  offers:[],
-  type: {},
-  isFavorite: false,
-};
+
 
 const generateDistDatalist = (destinations) => {
   let str = '';
@@ -29,19 +15,14 @@ const generateDistDatalist = (destinations) => {
   return str;
 };
 
-const generateOffersList = (events, _state) => {
+const generateOffersList = (offers, _state) => {
   let str = '';
-  //console.log(events);
-  const offersArray = events.map(({offers}) => offers);
-  if (offersArray.length > 0) {
+  if (offers.length > 0) {
     str += `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">`;
-    offersArray.forEach((offers) => {
-      //console.log(offersArray);
-      offers.forEach((offer) => {
-        console.log(_state.offers);
-        str += `<div class="event__offer-selector">
+    offers.forEach((offer) => {
+      str += `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" value = "${offer.id}"  id="event-offer-${offer.title}" type="checkbox" name="event-offer-${offer.title}" ${_state.offers.includes(offer.id) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${offer.title}">
         <span class="event__offer-title">${offer.title}</span>
@@ -49,7 +30,6 @@ const generateOffersList = (events, _state) => {
         <span class="event__offer-price">${offer.price}</span>
       </label>
     </div>`;
-      });
     });
     str += '</div></section>';
   }
@@ -101,7 +81,6 @@ const generatePhoto = (photosList) => {
 
 const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
   const {id, dates, destination, basePrice} = _state;
-  //console.log({destinations});
   const {start, finish} = dates;
   const directions = destinations.map((dest) => dest.name);
   const newPointList = directions.filter((element) => element !== destination.name);
@@ -138,7 +117,7 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
       </button>` : ''}
     </header>
     <section class="event__details">
-    ${generateOffersList(offers, _state)}
+    ${generateOffersList(selectedType.offers, _state)}
     ${(destination.description || destination.pictures.length) ?
       `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -154,33 +133,21 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
 </li>`
   );
 };
-export default class EditFormView extends AbstractStatefulView {
+export default class EditFormView extends AbstractPointView {
   #startDatepicker = null;
   #endDatepicker = null;
-  #destinations = [];
-  #offers = [];
 
-  constructor({
-    point = BLANK_POINT,
-    offers,
-    destinations,
-  }) {
-    super();
+  constructor(point = BLANK_POINT,{offers, destinations}) {
+    super({offers, destinations});
     this._state = EditFormView.parsePointToState(point);
-    this.#offers = offers;
-    this.#destinations = destinations;
 
     this.#setInnerHandlers();
     this.#setStartDatepicker();
     this.#setEndDatepicker();
   }
 
-  get selectedType() {
-    return this.#offers.find((offer) => offer.type === this._state.type);
-  }
-
   get template() {
-    return createEditTemplate(this._state, this.#offers, this.#destinations, this.selectedType);
+    return createEditTemplate(this._state, this.offers, this.destinations, this.selectedType);
   }
 
   removeElement = () => {
@@ -244,7 +211,7 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     if (evt.target.value) {
       this.updateElement({
-        destination: this.#destinations.find((element) => element.name === evt.target.value)
+        destination: this.destinations.find((element) => element.name === evt.target.value)
       });
       return;
     }

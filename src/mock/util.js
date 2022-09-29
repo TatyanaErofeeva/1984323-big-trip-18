@@ -59,13 +59,13 @@ const toCamelCase = (str) => [...str].map((element, index, arr) => {
   return element.toLowerCase();
 }).filter((element) => element !== ' ' && element !== '-').join('');
 
-const getСheckedOffers = (point, offers) => {
-  const checkedOffers = offers.find((offer) => offer.type === point.type).offers
-    .filter((offer) => point.offers.includes(offer.id));
-  return checkedOffers;
-};
+// const getСheckedOffers = (point, offers) => {
+//   const checkedOffers = offers.find((offer) => offer.type === point.type).offers
+//     .filter((offer) => point.offers.includes(offer.id));
+//   return checkedOffers;
+// };
 
-const getAllOffersByPoints = (pointOffers, typeOffers) => pointOffers.map((pointOffer) => typeOffers.find((typeOfferElem) => typeOfferElem.id === pointOffer).id);
+//const getAllOffersByPoints = (pointOffers, typeOffers) => pointOffers.map((pointOffer) => typeOffers.find((typeOfferElem) => typeOfferElem.id === pointOffer).id);
 
 const getUpperCaseFirstLetter = (str) => {
   if (!str) {
@@ -75,4 +75,4 @@ const getUpperCaseFirstLetter = (str) => {
   return str[0].toUpperCase() + str.slice(1);
 };
 
-export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString, toCamelCase,getСheckedOffers, getAllOffersByPoints, getUpperCaseFirstLetter};
+export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString, toCamelCase, getUpperCaseFirstLetter};

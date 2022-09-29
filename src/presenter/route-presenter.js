@@ -30,16 +30,6 @@ export default class RoutePresenter {
   #filterType = FILTER_TYPE.EVERYTHING;
   #isLoading = true;
 
-  get offers(){
-    const offers = this.#pointsModel.offers;
-    return offers;
-  }
-
-  get destinations(){
-    const destinations = this.#pointsModel.destinations;
-    return destinations;
-  }
-
   init = (headerMain, pointsContainer, pointsModel, filterModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
