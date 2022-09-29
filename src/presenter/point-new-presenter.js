@@ -9,7 +9,7 @@ import { BLANK_POINT } from '../view/abstract-point-view.js';
 export default class PointNewPresenter {
   #pointListContainer = null;
   #changeData = null;
-  #pointNewEditComponent = null;
+  #pointEditComponent = null;
   #destroyCallback = null;
   #pointsModel = null;
 
@@ -22,30 +22,30 @@ export default class PointNewPresenter {
   init = (callback) => {
     this.#destroyCallback = callback;
 
-    if (this.#pointNewEditComponent !== null) {
+    if (this.#pointEditComponent !== null) {
       return;
     }
 
-    this.#pointNewEditComponent = new EditFormView(BLANK_POINT, {
+    this.#pointEditComponent = new EditFormView(BLANK_POINT, {
       offers: this.#pointsModel.offers,
       destinations: this.#pointsModel.destinations
     });
-    this.#pointNewEditComponent.setFormSubmitHandler(this.#formSubmitHandler);
-    this.#pointNewEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
+    this.#pointEditComponent.setFormSubmitHandler(this.#formSubmitHandler);
+    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
-    render(this.#pointNewEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
+    render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
   destroy = () => {
-    if (this.#pointNewEditComponent === null) {
+    if (this.#pointEditComponent === null) {
       return;
     }
 
     this.#destroyCallback?.();
 
-    remove(this.#pointNewEditComponent);
-    this.#pointNewEditComponent = null;
+    remove(this.#pointEditComponent);
+    this.#pointEditComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };

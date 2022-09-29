@@ -45,6 +45,7 @@ const generateTimeData = (start, finish) => `<div class="event__field-group  eve
 
 const generateEventTypeList = (eventsObject, id, eventType) => {
   const eventsList = eventsObject.map(({type}) => type);
+  console.log(eventType.type);
   let events = '';
   eventsList.forEach((element) => {
     events += `<div class="event__type-item">
