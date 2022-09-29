@@ -57,5 +57,6 @@ const DESTINATIONS = [
 
 const directions = DESTINATIONS.map(({name}) => name);
 
+
 export {DESTINATIONS, directions};
 

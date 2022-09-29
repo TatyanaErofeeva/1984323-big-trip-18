@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -28,6 +27,7 @@ const isFutureDate = (dateFrom) => dayjs().isBefore(dayjs(dateFrom)) || dayjs().
 
 const isPastDate = (date) => dayjs().isAfter(dayjs(date));
 
+
 const getDateDiff = (start, finish) => {
   const diffTimeInMs = finish.diff(start);
   const timeDuration = dayjs.duration(diffTimeInMs);
@@ -52,5 +52,19 @@ const getSumElements = (elements) => {
   return sumElements;
 };
 const dateString = (start, finish) => (dayjs(start).format('MMM') === dayjs(finish).format('MMM')) ? `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD')}` : `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD MMM')}`;
+const toCamelCase = (str) => [...str].map((element, index, arr) => {
+  if (index > 0 && arr[index - 1] === ' ' || arr[index - 1] === '-') {
+    return element.toUpperCase();
+  }
+  return element.toLowerCase();
+}).filter((element) => element !== ' ' && element !== '-').join('');
 
-export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString};
+const getUpperCaseFirstLetter = (str) => {
+  if (!str) {
+    return str;
+  }
+
+  return str[0].toUpperCase() + str.slice(1);
+};
+
+export {getRandomInteger, getRandomArrayElement, getRandomArray, getDateDiff, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime, formatToDayMonth, getSumElements, dateString, toCamelCase, getUpperCaseFirstLetter};

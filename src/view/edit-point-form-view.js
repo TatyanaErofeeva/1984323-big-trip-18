@@ -1,27 +1,9 @@
-import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-//import { formatToDateWithTime} from '../mock/util.js';
-import { DESTINATIONS, directions } from '../mock/destination.js';
-import { ROUTE_POINT_TYPES } from '../mock/data.js';
+import AbstractPointView from './abstract-point-view.js';
+import { BLANK_POINT } from './abstract-point-view.js';
+import { formatToDateWithTime, getUpperCaseFirstLetter} from '../mock/util.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
-
-const BLANK_POINT = {
-  basePrice: null,
-  dates: {
-    start: new Date(),
-    finish: '',
-  },
-  destination : {
-    id: null,
-    description: '',
-    name: '',
-    pictures: [],
-  },
-  offers:[],
-  type: Object.values(ROUTE_POINT_TYPES)[0],
-  isFavorite: false,
-};
 
 const generateDistDatalist = (destinations) => {
   let str = '';
@@ -31,48 +13,49 @@ const generateDistDatalist = (destinations) => {
   return str;
 };
 
-const generateOffersList = (events, _state) => {
+const generateOffersList = (offers, _state) => {
   let str = '';
-  if (events.length > 0) {
+  if (offers.length > 0) {
     str += `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">`;
-    events.forEach((element) => {
+    offers.forEach((offer) => {
       str += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" value = "${element.id}"  id="event-offer-${element.name}" type="checkbox" name="event-offer-${element.name}" ${_state.offers.includes(element.id) ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${element.name}">
-        <span class="event__offer-title">${element.name}</span>
+      <input class="event__offer-checkbox  visually-hidden" value = "${offer.id}"  id="event-offer-${offer.title}" type="checkbox" name="event-offer-${offer.title}" ${_state.offers.includes(offer.id) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${offer.title}">
+        <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${element.price}</span>
+        <span class="event__offer-price">${offer.price}</span>
       </label>
     </div>`;
     });
     str += '</div></section>';
   }
+
   return str;
 };
 
 const generateTimeData = (start, finish) => `<div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start}" required readonly>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start ? formatToDateWithTime(start) : ''}" required>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish}" required readonly>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish ? formatToDateWithTime(finish) : ''}" required>
           </div>`;
 
-const generateEventTypeList = (eventsObject, iconSrc, id, eventType) => {
-  const eventsList = Object.keys(eventsObject);
+const generateEventTypeList = (eventsObject, id, eventType) => {
+  const eventsList = eventsObject.map(({type}) => type);
   let events = '';
   eventsList.forEach((element) => {
     events += `<div class="event__type-item">
-      <input id="event-type-${eventsObject[element].name.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${(eventType === eventsObject[element].name) ? 'checked' : ''}>
-      <label class="event__type-label  event__type-label--${eventsObject[element].name.toLowerCase()}" for="event-type-${eventsObject[element].name.toLowerCase()}-${id}">${eventsObject[element].name}</label>
+      <input id="event-type-${element}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${(eventType === element) ? 'checked' : ''}>
+      <label class="event__type-label  event__type-label--${element}" for="event-type-${element}-${id}">${getUpperCaseFirstLetter(element)}</label>
     </div>`;
   });
   return `<div class="event__type-wrapper">
                       <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                         <span class="visually-hidden">Choose event type</span>
-                        <img class="event__type-icon" width="17" height="17" src=${iconSrc} alt="Event type icon">
+                        <img class="event__type-icon" width="17" height="17" src="../img/icons/${eventType.type}.png" alt="Event type icon">
                       </label>
                       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
                       <div class="event__type-list">
@@ -94,22 +77,23 @@ const generatePhoto = (photosList) => {
   return str;
 };
 
-const createEditTemplate = (_state = {}) => {
-  const {id, dates, type, destination, basePrice} = _state;
-  const {iconSrc, name, offers} = type;
+const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
+  const {id, dates, destination, basePrice} = _state;
   const {start, finish} = dates;
+  const directions = destinations.map((dest) => dest.name);
   const newPointList = directions.filter((element) => element !== destination.name);
 
   return (
     `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
-    ${generateEventTypeList(ROUTE_POINT_TYPES, iconSrc, id, name)}
+    ${generateEventTypeList(offers, id, selectedType)}
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-${id}">
-          ${name}
+          ${selectedType.type}
         </label>
+
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
         ${generateDistDatalist(newPointList)}
@@ -131,7 +115,7 @@ const createEditTemplate = (_state = {}) => {
       </button>` : ''}
     </header>
     <section class="event__details">
-    ${generateOffersList(offers, _state)}
+    ${generateOffersList(selectedType.offers, _state)}
     ${(destination.description || destination.pictures.length) ?
       `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -147,12 +131,12 @@ const createEditTemplate = (_state = {}) => {
 </li>`
   );
 };
-export default class EditFormView extends AbstractStatefulView {
+export default class EditFormView extends AbstractPointView {
   #startDatepicker = null;
   #endDatepicker = null;
 
-  constructor(point = BLANK_POINT) {
-    super();
+  constructor(point = BLANK_POINT,{offers, destinations}) {
+    super({offers, destinations});
     this._state = EditFormView.parsePointToState(point);
 
     this.#setInnerHandlers();
@@ -160,8 +144,12 @@ export default class EditFormView extends AbstractStatefulView {
     this.#setEndDatepicker();
   }
 
+  get selectedType() {
+    return this.pointType(this._state.type);
+  }
+
   get template() {
-    return createEditTemplate(this._state);
+    return createEditTemplate(this._state, this.offers, this.destinations, this.selectedType);
   }
 
   removeElement = () => {
@@ -200,11 +188,11 @@ export default class EditFormView extends AbstractStatefulView {
     this._callback.click();
   };
 
-  #changeTypePoint = ( evt ) => {
+  #changeTypePoint = ( evt) => {
     evt.preventDefault();
     if (evt.target.classList.contains('event__type-input')) {
       this.updateElement({
-        type: ROUTE_POINT_TYPES[evt.target.value],
+        type: evt.target.value,
         offers: []
       });
     }
@@ -215,8 +203,8 @@ export default class EditFormView extends AbstractStatefulView {
     if (evt.target.classList.contains('event__offer-checkbox')) {
       this._setState({
         offers: evt.target.checked
-          ? [...this._state.offers, evt.target.value]
-          : this._state.offers.filter(( item ) => item !== evt.target.value),
+          ? [...this._state.offers, Number(evt.target.value)]
+          : this._state.offers.filter(( item ) => item !== Number(evt.target.value)),
       });
     }
   };
@@ -225,7 +213,7 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     if (evt.target.value) {
       this.updateElement({
-        destination: DESTINATIONS.find((element) => element.name === evt.target.value)
+        destination: this.destinations.find((element) => element.name === evt.target.value)
       });
       return;
     }
@@ -233,13 +221,6 @@ export default class EditFormView extends AbstractStatefulView {
       BLANK_POINT.destination,
     );
   };
-
-  /*#changeDestination = (evt) => {
-    evt.preventDefault();
-    this.updateElement({
-      destination: DESTINATIONS.find((element) => element.name === evt.target.value)
-    });
-  };*/
 
   #changePrice = (evt) => {
     evt.preventDefault();
@@ -287,7 +268,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.updateElement({
       dates: {
         ...this._state.dates,
-        start: [userDate],
+        start: userDate,
       }
     });
   };
@@ -296,7 +277,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.updateElement({
       dates: {
         ...this._state.dates,
-        finish: [userDate],
+        finish: userDate,
       }
     });
   };
@@ -307,8 +288,8 @@ export default class EditFormView extends AbstractStatefulView {
       {
         enableTime: true,
         'time_24hr': true,
-        dateFormat: 'd/m/y H:i',
-        minDate: 'today',
+        maxDate: this._state.dates.finish,
+        allowInput: true,
         defaultDate: this._state.dates.start,
         onChange: this.#startDateChangeHandler,
       }
@@ -321,8 +302,8 @@ export default class EditFormView extends AbstractStatefulView {
       {
         enableTime: true,
         'time_24hr': true,
-        dateFormat: 'd/m/y H:i',
-        minDate: 'today',
+        minDate: this._state.dates.start,
+        allowInput: true,
         defaultDate: this._state.dates.finish,
         onChange: this.#endDateChangeHandler,
       }

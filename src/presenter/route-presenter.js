@@ -1,11 +1,12 @@
 import SortView from '../view/sort-view.js';
 import EmptyListOfPoints from '../view/no-points-view.js';
+import LoadingView from '../view/loading-view.js';
 import PointsListView from '../view/points-list-view.js';
 import {render, RenderPosition, remove} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import { sortByPrice, sortByTime, sortByDay } from '../mock/sort.js';
 import { FILTER_TYPE, SortData, SortType, UpdateType, UserAction } from '../mock/const.js';
-import { filter } from '../mock/data.js';
+import { filter } from '../mock/filter.js';
 import PointNewPresenter from './point-new-presenter.js';
 import SiteMenuView from '../view/site-menu-view .js';
 
@@ -23,9 +24,11 @@ export default class RoutePresenter {
   #pointPresenter = new Map();
   #pointNewPresenter = null;
   #tripList = new PointsListView();
+  #loadingComponent = new LoadingView();
   #noPointComponent = null;
   #currentSortType = SortData[0].id;
   #filterType = FILTER_TYPE.EVERYTHING;
+  #isLoading = true;
 
   init = (headerMain, pointsContainer, pointsModel, filterModel) => {
     this.#pointsContainer = pointsContainer;
@@ -60,6 +63,7 @@ export default class RoutePresenter {
     return filteredPoints;
   }
 
+
   createPoint = (callback) => {
     this.#currentSortType = SortData[0].id;
     this.#filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPE.EVERYTHING);
@@ -87,7 +91,7 @@ export default class RoutePresenter {
   };
 
   #renderSiteMenu = () => {
-    this.#menuComponent = new SiteMenuView(this.points);
+    this.#menuComponent = new SiteMenuView(this.points, this.#pointsModel);
     render(this.#menuComponent, this.#headerContainer, RenderPosition.AFTERBEGIN);
   };
 
@@ -97,6 +101,7 @@ export default class RoutePresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointComponent){
       remove(this.#noPointComponent);
@@ -105,12 +110,11 @@ export default class RoutePresenter {
     if (resetSortType) {
       this.#currentSortType = SortData[0].id;
     }
-
     remove (this.#menuComponent);
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#tripList.element, this.#handleViewAction, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.#tripList.element, this.#handleViewAction, this.#handleModeChange, this.#pointsModel);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -121,12 +125,21 @@ export default class RoutePresenter {
     });
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#pointsContainer);
+  };
+
   #renderNoPoints = () => {
     this.#noPointComponent = new EmptyListOfPoints(this.#filterType);
     render( this.#noPointComponent, this.#pointsContainer );
   };
 
   #renderRoute = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const points = this.points;
     const pointsCount = points.length;
     render( this.#tripList, this.#pointsContainer );
@@ -146,11 +159,16 @@ export default class RoutePresenter {
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearRoute({resetSortType: true});
+        this.#clearRoute();
         this.#renderRoute();
         break;
       case UpdateType.MAJOR:
         this.#clearRoute({resetSortType: true});
+        this.#renderRoute();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderRoute();
         break;
     }

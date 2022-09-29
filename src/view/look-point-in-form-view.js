@@ -1,15 +1,15 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractPointView from './abstract-point-view';
 import {getDateDiff} from '../mock/util.js';
 import dayjs from 'dayjs';
 import { formatToDateMonthsAndDay, formatToFullDate, formatToTime } from '../mock/util.js';
 
-const generateOffersListForPoint = (offersList, point) => {
+const generateOffersListForPoint = (offers, point) => {
   let str = '';
-  if (offersList.length > 0) {
-    offersList.forEach((element) => {
+  if (offers.length > 0) {
+    offers.forEach((element) => {
       if (point.offers.includes(element.id)){
         str += `<li class="event__offer">
-                <span class="event__offer-title">${element.name}</span>&plus;&euro;&nbsp;
+                <span class="event__offer-title">${element.title}</span>&plus;&euro;&nbsp;
                 <span class="event__offer-price">${element.price}</span>
               </li>`;
       }
@@ -18,9 +18,8 @@ const generateOffersListForPoint = (offersList, point) => {
   return str;
 };
 
-const createNewPointTemplate = (point) => {
-  const {dates, type, destination, isFavorite, basePrice} = point;
-  const {iconSrc, name, offers} = type;
+const createNewPointTemplate = (point, offers, destinations, selectedType) => {
+  const {dates,type, destination, isFavorite, basePrice} = point;
   const {start, finish} = dates;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
   return (
@@ -28,9 +27,9 @@ const createNewPointTemplate = (point) => {
       <div class="event">
         <time class="event__date" datetime="${formatToFullDate(start)}">${formatToDateMonthsAndDay(start)}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="${iconSrc}" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="../img/icons/${point.type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${name} ${destination.name}</h3>
+        <h3 class="event__title">${type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dayjs(start)}">${formatToTime(start)}</time>
@@ -44,7 +43,7 @@ const createNewPointTemplate = (point) => {
                 </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-        ${generateOffersListForPoint(offers, point)}
+        ${generateOffersListForPoint(selectedType.offers, point)}
         </ul>
         <button class="event__favorite-btn ${favorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -60,16 +59,20 @@ const createNewPointTemplate = (point) => {
   );
 };
 
-export default class PointView extends AbstractView {
+export default class PointView extends AbstractPointView {
   #point = null;
 
-  constructor(point) {
-    super();
+  constructor(point, {offers, destinations}) {
+    super({offers, destinations});
     this.#point = point;
   }
 
+  get selectedType() {
+    return this.pointType(this.#point.type);
+  }
+
   get template() {
-    return createNewPointTemplate(this.#point);
+    return createNewPointTemplate(this.#point, this.offers, this.destinations, this.selectedType);
   }
 
   setEditFormClickHandler = (callback) => {
