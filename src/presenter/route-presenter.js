@@ -6,7 +6,7 @@ import {render, RenderPosition, remove} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import { sortByPrice, sortByTime, sortByDay } from '../mock/sort.js';
 import { FILTER_TYPE, SortData, SortType, UpdateType, UserAction } from '../mock/const.js';
-import { filter } from '../mock/data.js';
+import { filter } from '../mock/filter.js';
 import PointNewPresenter from './point-new-presenter.js';
 import SiteMenuView from '../view/site-menu-view .js';
 

@@ -1,4 +1,3 @@
-//import SiteMenuView from './view/site-menu-view .js';
 import { render} from './framework/render.js';
 import RoutePresenter from './presenter/route-presenter.js';
 import PointsModel from './model/points-model.js';

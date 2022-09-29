@@ -59,14 +59,6 @@ const toCamelCase = (str) => [...str].map((element, index, arr) => {
   return element.toLowerCase();
 }).filter((element) => element !== ' ' && element !== '-').join('');
 
-// const getСheckedOffers = (point, offers) => {
-//   const checkedOffers = offers.find((offer) => offer.type === point.type).offers
-//     .filter((offer) => point.offers.includes(offer.id));
-//   return checkedOffers;
-// };
-
-//const getAllOffersByPoints = (pointOffers, typeOffers) => pointOffers.map((pointOffer) => typeOffers.find((typeOfferElem) => typeOfferElem.id === pointOffer).id);
-
 const getUpperCaseFirstLetter = (str) => {
   if (!str) {
     return str;

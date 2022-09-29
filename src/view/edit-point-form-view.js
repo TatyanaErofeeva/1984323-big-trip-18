@@ -5,8 +5,6 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-
-
 const generateDistDatalist = (destinations) => {
   let str = '';
   destinations.forEach((element) => {
