@@ -13,7 +13,7 @@ const generateDistDatalist = (destinations) => {
   return str;
 };
 
-const generateOffersList = (offers, _state) => {
+const generateOffersList = (offers, _state, isDisabled) => {
   let str = '';
   if (offers.length > 0) {
     str += `<section class="event__section  event__section--offers">
@@ -21,7 +21,7 @@ const generateOffersList = (offers, _state) => {
               <div class="event__available-offers">`;
     offers.forEach((offer) => {
       str += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" value = "${offer.id}"  id="event-offer-${offer.title}" type="checkbox" name="event-offer-${offer.title}" ${_state.offers.includes(offer.id) ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" value = "${offer.id}"  id="event-offer-${offer.title}" type="checkbox" name="event-offer-${offer.title}" ${_state.offers.includes(offer.id) ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for="event-offer-${offer.title}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -35,17 +35,16 @@ const generateOffersList = (offers, _state) => {
   return str;
 };
 
-const generateTimeData = (start, finish) => `<div class="event__field-group  event__field-group--time">
+const generateTimeData = (start, finish, isDisabled) => `<div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start ? formatToDateWithTime(start) : ''}" required>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start ? formatToDateWithTime(start) : ''}" ${isDisabled ? 'disabled' : ''} required>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish ? formatToDateWithTime(finish) : ''}" required>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish ? formatToDateWithTime(finish) : ''}" ${isDisabled ? 'disabled' : ''} required>
           </div>`;
 
 const generateEventTypeList = (eventsObject, id, eventType) => {
   const eventsList = eventsObject.map(({type}) => type);
-  console.log(eventType.type);
   let events = '';
   eventsList.forEach((element) => {
     events += `<div class="event__type-item">
@@ -79,7 +78,7 @@ const generatePhoto = (photosList) => {
 };
 
 const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
-  const {id, dates, destination, basePrice} = _state;
+  const { id, dates, destination, basePrice, isDisabled, isSaving, isDeleting, } = _state;
   const {start, finish} = dates;
   const directions = destinations.map((dest) => dest.name);
   const newPointList = directions.filter((element) => element !== destination.name);
@@ -95,7 +94,7 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
           ${selectedType.type}
         </label>
 
-        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-${id}" required>
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-${id}"  ${isDisabled ? 'disabled' : ''} required>
         <datalist id="destination-list-${id}">
         ${generateDistDatalist(newPointList)}
         </datalist>
@@ -107,16 +106,16 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" required>
+        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''} required>
       </div>
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">${destination.id === null ? 'Cancel' : 'Delete'}</button>
-      ${destination.id !== null ? `<button class="event__rollup-btn" type="button">
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset" ${ isDisabled ? 'disabled' : ''}>${destination.id === null ? 'Cancel' : isDeleting ? 'Deleting...' : 'Delete'} </button>
+      ${destination.id !== null ? `<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : '' }>
         <span class="visually-hidden">Open event</span>
       </button>` : ''}
     </header>
     <section class="event__details">
-    ${generateOffersList(selectedType.offers, _state)}
+    ${generateOffersList(selectedType.offers, _state, isDisabled)}
     ${(destination.description || destination.pictures.length) ?
       `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -311,8 +310,20 @@ export default class EditFormView extends AbstractPointView {
     );
   };
 
-  static parsePointToState = (point) => ({ ...point });
+  static parsePointToState = (point) => ({
+    ...point, 
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false, 
+  });
 
-  static parseStateToPoint = (state) =>({ ...state });
+  static parseStateToPoint = (state) => {
+    const point = { ...state };
 
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
+  };
 }

@@ -1,7 +1,6 @@
 import {render, remove, RenderPosition} from '../framework/render.js';
 import EditFormView from '../view/edit-point-form-view.js';
 import { UserAction, UpdateType } from '../mock/const.js';
-import { nanoid } from 'nanoid';
 import { isEscKey } from './point-presenter.js';
 import { BLANK_POINT } from '../view/abstract-point-view.js';
 
@@ -26,7 +25,11 @@ export default class PointNewPresenter {
       return;
     }
 
-    this.#pointEditComponent = new EditFormView(BLANK_POINT, {
+    this.#pointEditComponent = new EditFormView({
+      ...BLANK_POINT,
+      type: this.#pointsModel.offers[0].type
+       }, 
+       {
       offers: this.#pointsModel.offers,
       destinations: this.#pointsModel.destinations
     });
@@ -54,9 +57,8 @@ export default class PointNewPresenter {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      { ...point, id: nanoid()},
+      point,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {
@@ -68,5 +70,24 @@ export default class PointNewPresenter {
       evt.preventDefault();
       this.destroy();
     }
+  };
+
+  setSaving = () => {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
   };
 }
