@@ -158,14 +158,18 @@ export default class PointPresenter {
   };
 
   #formSubmitHandler = (update) => {
-    const isMinorUpdate = this.#point.type !== update.type ||
-    this.#point.destination.name !== update.destination.name;
+    const isMinorUpdate = this.#point.destination.name !== update.destination.name ||
+    this.#point.dates.start !== update.dates.start ||
+    this.#point.dates.finish !== update.dates.finish ||
+    this.#point.basePrice !== update.basePrice;
+
 
     this.#changeData(
       UserAction.UPDATE_POINT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update
     );
+    this.#replaceFormToCard();
   };
 
   #handleDeleteClick = (point) => {

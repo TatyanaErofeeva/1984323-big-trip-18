@@ -28,8 +28,8 @@ export default class PointNewPresenter {
     this.#pointEditComponent = new EditFormView({
       ...BLANK_POINT,
       type: this.#pointsModel.offers[0].type
-       }, 
-       {
+    },
+    {
       offers: this.#pointsModel.offers,
       destinations: this.#pointsModel.destinations
     });

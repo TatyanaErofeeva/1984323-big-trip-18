@@ -35,12 +35,12 @@ const generateOffersList = (offers, _state, isDisabled) => {
   return str;
 };
 
-const generateTimeData = (start, finish, isDisabled) => `<div class="event__field-group  event__field-group--time">
+const generateTimeData = (start, finish) => `<div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start ? formatToDateWithTime(start) : ''}" ${isDisabled ? 'disabled' : ''} required>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start ? formatToDateWithTime(start) : ''}" required>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish ? formatToDateWithTime(finish) : ''}" ${isDisabled ? 'disabled' : ''} required>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finish ? formatToDateWithTime(finish) : ''}" required>
           </div>`;
 
 const generateEventTypeList = (eventsObject, id, eventType) => {
@@ -311,10 +311,10 @@ export default class EditFormView extends AbstractPointView {
   };
 
   static parsePointToState = (point) => ({
-    ...point, 
+    ...point,
     isDisabled: false,
     isSaving: false,
-    isDeleting: false, 
+    isDeleting: false,
   });
 
   static parseStateToPoint = (state) => {
