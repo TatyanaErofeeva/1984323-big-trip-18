@@ -1,12 +1,11 @@
 import AbstractView from '../framework/view/abstract-view';
 import { dateString } from '../mock/util';
 
-
 const createSiteMenuTemplate = (points, pointsModel) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
-  const start = firstPoint['dates']['start'];
-  const finish = lastPoint['dates']['start'];
+  const start = firstPoint.dates.start;
+  const finish = lastPoint.dates.start;
   const pointsCost = points.reduce((prev, current) => prev + current.basePrice, 0);
 
   const calcOffersPrice = () => {

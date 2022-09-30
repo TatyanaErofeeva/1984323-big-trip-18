@@ -1,5 +1,4 @@
 import { UpdateType } from '../mock/const.js';
-//import {getСheckedOffers, getAllOffersByPoints, getUpperCaseFirstLetter } from '../mock/util.js';
 import Observable from '../framework/observable.js';
 
 export default class PointsModel extends Observable {
@@ -69,14 +68,14 @@ export default class PointsModel extends Observable {
   };
 
   addPoint = async (updateType, update) => {
-      try {
-        const response = await this.#pointsApiService.addPoint(update);
-        const newPoint = this.#adaptToClient(response);
-        this.#points = [newPoint, ...this.#points];
-        this._notify(updateType, newPoint);
-      } catch (err) {
-        throw new Error('Can\'t add point');
-      }
+    try {
+      const response = await this.#pointsApiService.addPoint(update);
+      const newPoint = this.#adaptToClient(response);
+      this.#points = [newPoint, ...this.#points];
+      this._notify(updateType, newPoint);
+    } catch (err) {
+      throw new Error('Can\'t add point');
+    }
   };
 
   deletePoint = async (updateType, update) => {
@@ -86,9 +85,6 @@ export default class PointsModel extends Observable {
       throw new Error('Can\'t delete unexisting point');
     }
     try {
-      // Обратите внимание, метод удаления задачи на сервере
-      // ничего не возвращает. Это и верно,
-      // ведь что можно вернуть при удалении задачи?
       await this.#pointsApiService.deletePoint(update);
       this.#points = [
         ...this.#points.slice(0, index),
@@ -103,21 +99,19 @@ export default class PointsModel extends Observable {
   #adaptToClient = (point) => {
     const adaptedPoint = {
       ...point,
-      basePrice: point['base_price'],
+      basePrice: point.base_price,
       dates: {
-        start: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
-        finish: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
+        start: point.date_from !== null ? new Date(point.date_from) : point.date_from,
+        finish: point.date_to !== null ? new Date(point.date_to) : point.date_to,
       },
       destination: this.destinations.find((destination) => destination.id === point.destination),
-      isFavorite: point['is_favorite']
+      isFavorite: point.is_favorite
     };
 
-
-    // Ненужные ключи мы удаляем
-    delete adaptedPoint['base_price'];
-    delete adaptedPoint['date_from'];
-    delete adaptedPoint['date_to'];
-    delete adaptedPoint['is_favorite'];
+    delete adaptedPoint.base_price;
+    delete adaptedPoint.date_from;
+    delete adaptedPoint.date_to;
+    delete adaptedPoint.is_favorite;
 
     return adaptedPoint;
   };

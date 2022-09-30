@@ -45,7 +45,7 @@ export default class PointNewPresenter {
       return;
     }
 
-    this.#destroyCallback?.();
+    this.#destroyCallback();
 
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;

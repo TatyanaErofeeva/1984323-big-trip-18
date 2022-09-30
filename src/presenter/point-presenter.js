@@ -1,16 +1,13 @@
 import {render, replace, remove} from '../framework/render.js';
 import PointView from '../view/look-point-in-form-view.js';
 import EditFormView from '../view/edit-point-form-view.js';
-import { KEYS } from '../mock/const.js';
+import { isEscKey } from '../mock/util.js';
 import { UserAction, UpdateType } from '../mock/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
-
-const isEscKey = (evt) => KEYS.ESCAPE.includes(evt.key);
-
 export default class PointPresenter {
   #pointListContainer = null;
   #changeData = null;
@@ -58,7 +55,6 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.DEFAULT) {
-      // replace(this.#pointComponent, prevPointComponent);
       replace(this.#pointComponent, prevPointComponent);
 
     }
@@ -161,8 +157,8 @@ export default class PointPresenter {
     const isMinorUpdate = this.#point.destination.name !== update.destination.name ||
     this.#point.dates.start !== update.dates.start ||
     this.#point.dates.finish !== update.dates.finish ||
-    this.#point.basePrice !== update.basePrice;
-
+    this.#point.basePrice !== update.basePrice ||
+    this.#point.offers.every((id) => update.offers.includes[id]);
 
     this.#changeData(
       UserAction.UPDATE_POINT,
