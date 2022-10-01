@@ -112,8 +112,4 @@ export default class PointsModel extends Observable {
 
     return adaptedPoint;
   };
-
-  findOffersByType(typeName) {
-    return this.offers.find((offer) => offer.type === typeName);
-  }
 }

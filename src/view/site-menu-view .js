@@ -1,24 +1,22 @@
 import AbstractPointView from './abstract-point-view.js';
 import { dateString } from '../mock/util';
 
-const createSiteMenuTemplate = (points, offers, destinations, selectedType ) => {
+const createSiteMenuTemplate = (points, offers) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
   const start = firstPoint.dates.start;
   const finish = lastPoint.dates.start;
   const pointsCost = points.reduce((prev, current) => prev + current.basePrice, 0);
-  //console.log(selectedType.offers);
+  const acc = [];
+  offers.map(({offers}) => offers)
+    .forEach((offer) =>
+      offer.forEach((obj) => acc.push(obj)));
   const calcOffersPrice = () => {
     let offersPointPrice = 0;
     points.forEach((point) =>
       point.offers.forEach((offerElem) => {
         if (point.offers.length > 0){
-          console.log(points);
-          console.log(offerElem);
-          console.log(selectedType.offers);
-          console.log(selectedType.offers.find((offer) => offer.id === offerElem));
-          //offersPointPrice += pointsModel.findOffersByType(point.type).offers.find((offer) => offer.id === offerElem).price;
-          offersPointPrice += selectedType.offers.find((offer) => offer.id === offerElem).price;
+          offersPointPrice += acc.find((offer) => offer.id === offerElem).price;
         }
       })
     );
@@ -59,12 +57,7 @@ export default class SiteMenuView extends AbstractPointView {
     this.#points = points;
   }
 
-  get selectedType() {
-    //console.log(this.#points.map(({type}) => type));
-    return this.pointType(this.#points.map(({type}) => type)[0]);
-  }
-
   get template() {
-    return createSiteMenuTemplate(this.#points,this.offers, this.destinations, this.selectedType);
+    return createSiteMenuTemplate(this.#points,this.offers, this.destinations);
   }
 }
