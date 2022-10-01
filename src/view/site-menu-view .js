@@ -1,19 +1,24 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractPointView from './abstract-point-view.js';
 import { dateString } from '../mock/util';
 
-const createSiteMenuTemplate = (points, pointsModel) => {
+const createSiteMenuTemplate = (points, offers, destinations, selectedType ) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
   const start = firstPoint.dates.start;
   const finish = lastPoint.dates.start;
   const pointsCost = points.reduce((prev, current) => prev + current.basePrice, 0);
-
+  //console.log(selectedType.offers);
   const calcOffersPrice = () => {
     let offersPointPrice = 0;
     points.forEach((point) =>
       point.offers.forEach((offerElem) => {
         if (point.offers.length > 0){
-          offersPointPrice += pointsModel.findOffersByType(point.type).offers.find((offer) => offer.id === offerElem).price;
+          console.log(points);
+          console.log(offerElem);
+          console.log(selectedType.offers);
+          console.log(selectedType.offers.find((offer) => offer.id === offerElem));
+          //offersPointPrice += pointsModel.findOffersByType(point.type).offers.find((offer) => offer.id === offerElem).price;
+          offersPointPrice += selectedType.offers.find((offer) => offer.id === offerElem).price;
         }
       })
     );
@@ -46,18 +51,20 @@ const createSiteMenuTemplate = (points, pointsModel) => {
 </section>`);
 };
 
-export default class SiteMenuView extends AbstractView {
-
+export default class SiteMenuView extends AbstractPointView {
   #points;
-  #pointsModel = null;
 
-  constructor(points, pointsModel) {
-    super();
+  constructor(points, {offers, destinations}) {
+    super({offers, destinations});
     this.#points = points;
-    this.#pointsModel = pointsModel;
+  }
+
+  get selectedType() {
+    //console.log(this.#points.map(({type}) => type));
+    return this.pointType(this.#points.map(({type}) => type)[0]);
   }
 
   get template() {
-    return createSiteMenuTemplate(this.#points, this.#pointsModel);
+    return createSiteMenuTemplate(this.#points,this.offers, this.destinations, this.selectedType);
   }
 }
