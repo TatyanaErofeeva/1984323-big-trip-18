@@ -1,14 +1,14 @@
 import AbstractPointView from './abstract-point-view.js';
 import { dateString } from '../mock/util';
 
-const createSiteMenuTemplate = (points, offers) => {
+const createSiteMenuTemplate = (points, types) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
   const start = firstPoint.dates.start;
   const finish = lastPoint.dates.start;
   const pointsCost = points.reduce((prev, current) => prev + current.basePrice, 0);
   const acc = [];
-  offers.map(({offers}) => offers)
+  types.map(({offers}) => offers)
     .forEach((offer) =>
       offer.forEach((obj) => acc.push(obj)));
   const calcOffersPrice = () => {
