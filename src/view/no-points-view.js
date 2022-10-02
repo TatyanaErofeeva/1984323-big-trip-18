@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import {FILTER_TYPE} from '../mock/const';
+import {FILTER_TYPE} from '../utils/const';
 
 const ListEmptyType = {
   [FILTER_TYPE.EVERYTHING]:'Click New Event to create your first point' ,

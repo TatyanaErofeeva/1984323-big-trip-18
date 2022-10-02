@@ -1,4 +1,4 @@
-import { UpdateType } from '../mock/const.js';
+import { UpdateType } from '../utils/const.js';
 import Observable from '../framework/observable.js';
 
 export default class PointsModel extends Observable {

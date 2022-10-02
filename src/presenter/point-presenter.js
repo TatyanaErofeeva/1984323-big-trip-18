@@ -1,8 +1,8 @@
 import {render, replace, remove} from '../framework/render.js';
 import PointView from '../view/look-point-in-form-view.js';
 import EditFormView from '../view/edit-point-form-view.js';
-import { isEscKey } from '../mock/util.js';
-import { UserAction, UpdateType } from '../mock/const.js';
+import { isEscKey } from '../utils/util.js';
+import { UserAction, UpdateType } from '../utils/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -158,7 +158,8 @@ export default class PointPresenter {
     this.#point.dates.start !== update.dates.start ||
     this.#point.dates.finish !== update.dates.finish ||
     this.#point.basePrice !== update.basePrice ||
-    this.#point.offers.every((id) => update.offers.includes[id]);
+    this.#point.offers.length !== update.offers.length ||
+    !this.#point.offers.every((id) => update.offers.includes[id]);
 
     this.#changeData(
       UserAction.UPDATE_POINT,

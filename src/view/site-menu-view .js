@@ -1,5 +1,5 @@
 import AbstractPointView from './abstract-point-view.js';
-import { dateString } from '../mock/util';
+import { dateString } from '../utils/date.js';
 
 const createSiteMenuTemplate = (points, types) => {
   const firstPoint = points[0];
@@ -38,15 +38,22 @@ const createSiteMenuTemplate = (points, types) => {
     return str;
   };
 
-  return ( `<section class="trip-main__trip-info  trip-info">
-  <div class="trip-info__main">
-    <h1 class="trip-info__title">${getDestinationString(points)}</h1>
-    <p class="trip-info__dates">${dateString(start, finish)}</p>
-  </div>
-  <p class="trip-info__cost">
-    Total: &euro;&nbsp;<span class="trip-info__cost-value">${fullTripCost}</span>
-  </p>
-</section>`);
+  return (
+    `<section class="trip-main__trip-info  trip-info">
+       <div class="trip-info__main">
+         <h1 class="trip-info__title">
+           ${getDestinationString(points)}
+         </h1>
+         <p class="trip-info__dates">
+           ${dateString(start, finish)}
+         </p>
+       </div>
+       <p class="trip-info__cost">
+         Total: &euro;&nbsp;<span class="trip-info__cost-value">
+         ${fullTripCost}
+         </span>
+       </p>
+    </section>`);
 };
 
 export default class SiteMenuView extends AbstractPointView {

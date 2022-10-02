@@ -1,7 +1,7 @@
 import {render, remove, RenderPosition} from '../framework/render.js';
 import EditFormView from '../view/edit-point-form-view.js';
-import { UserAction, UpdateType } from '../mock/const.js';
-import { isEscKey } from './point-presenter.js';
+import { UserAction, UpdateType } from '../utils/const.js';
+import { isEscKey } from '../utils/util.js';
 import { BLANK_POINT } from '../view/abstract-point-view.js';
 
 

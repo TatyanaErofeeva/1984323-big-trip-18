@@ -1,5 +1,5 @@
 
-import { isFutureDate, isPastDate } from './util.js';
+import { isFutureDate, isPastDate } from './date.js';
 import { FILTER_TYPE } from './const.js';
 
 const filter = {
