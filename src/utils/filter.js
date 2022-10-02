@@ -7,10 +7,5 @@ const filter = {
   [FILTER_TYPE.FUTURE]: (points) => points.filter((point) => isFutureDate(point.dates.start)),
   [FILTER_TYPE.PAST]: (points) => points.filter((point) => isPastDate(point.dates.finish)),
 };
-const generateFilter = () => Object.keys(filter).map(
-  (filterName) => ({
-    name: filterName,
-  }),
-);
 
-export {generateFilter, filter};
+export { filter};

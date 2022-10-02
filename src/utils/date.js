@@ -24,9 +24,8 @@ const formatToDateWithTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
-const formatToDayMonth = (date) => dayjs(date).format('D MMMM');
 
 const dateString = (start, finish) => (dayjs(start).format('MMM') === dayjs(finish).format('MMM')) ? `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD')}` : `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD MMM')}`;
 
 
-export{getDateDiff, dateString, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToDayMonth, formatToFullDate, formatToTime};
+export{getDateDiff, dateString, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime};

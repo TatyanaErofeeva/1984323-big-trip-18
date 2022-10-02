@@ -7,7 +7,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
 const generateDistDatalist = (destinations) => destinations
-  .map((element) => `<option value='${element}'></option>`);
+  .map((element) => `<option value='${element}'></option>`).join('');
 
 const generateOffersList = (offers, _state, isDisabled) => {
   if (!offers.length) {
@@ -34,7 +34,7 @@ const generateOffersList = (offers, _state, isDisabled) => {
                 <span class="event__offer-price">${offer.price}</span>
               </label>
            </div>`
-  ))}
+  )).join('')}
      </div>
      </section>
      `;
@@ -106,7 +106,7 @@ const generateEventTypeList = (eventsObject, id, eventType) => {
 };
 
 const generatePhoto = (photosList) => photosList
-  .map((element) => `<img class="event__photo" src=${element.src} alt="Event photo">`);
+  .map((element) => `<img class="event__photo" src=${element.src} alt="Event photo">`).join('');
 
 const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
   const { id, dates, destination, basePrice, isDisabled, isSaving, isDeleting, } = _state;
