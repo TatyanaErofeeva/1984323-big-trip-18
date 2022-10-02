@@ -13,7 +13,7 @@ const BLANK_POINT = {
     pictures: [],
   },
   offers:[],
-  type: {},
+  type: '',
   isFavorite: false,
 };
 

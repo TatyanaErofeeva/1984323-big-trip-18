@@ -1,16 +1,13 @@
 import {render, replace, remove} from '../framework/render.js';
 import PointView from '../view/look-point-in-form-view.js';
 import EditFormView from '../view/edit-point-form-view.js';
-import { KEYS } from '../mock/const.js';
-import { UserAction, UpdateType } from '../mock/const.js';
+import { isEscKey } from '../utils/util.js';
+import { UserAction, UpdateType } from '../utils/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
-
-const isEscKey = (evt) => KEYS.ESCAPE.includes(evt.key);
-
 export default class PointPresenter {
   #pointListContainer = null;
   #changeData = null;
@@ -59,10 +56,12 @@ export default class PointPresenter {
 
     if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
+
     }
 
     if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -72,6 +71,41 @@ export default class PointPresenter {
   destroy = () => {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
+  };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
   };
 
   resetView = () => {
@@ -120,8 +154,12 @@ export default class PointPresenter {
   };
 
   #formSubmitHandler = (update) => {
-    const isMinorUpdate = this.#point.type !== update.type ||
-    this.#point.destination.name !== update.destination.name;
+    const isMinorUpdate = this.#point.destination.name !== update.destination.name ||
+    this.#point.dates.start !== update.dates.start ||
+    this.#point.dates.finish !== update.dates.finish ||
+    this.#point.basePrice !== update.basePrice ||
+    this.#point.offers.length !== update.offers.length ||
+    !this.#point.offers.every((id) => update.offers.includes[id]);
 
     this.#changeData(
       UserAction.UPDATE_POINT,

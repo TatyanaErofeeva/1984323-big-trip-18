@@ -1,20 +1,22 @@
-import AbstractView from '../framework/view/abstract-view';
-import { dateString } from '../mock/util';
+import AbstractPointView from './abstract-point-view.js';
+import { dateString } from '../utils/date.js';
 
-
-const createSiteMenuTemplate = (points, pointsModel) => {
+const createSiteMenuTemplate = (points, types) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
-  const start = firstPoint['dates']['start'];
-  const finish = lastPoint['dates']['start'];
+  const start = firstPoint.dates.start;
+  const finish = lastPoint.dates.start;
   const pointsCost = points.reduce((prev, current) => prev + current.basePrice, 0);
-
+  const acc = [];
+  types.map(({offers}) => offers)
+    .forEach((offer) =>
+      offer.forEach((obj) => acc.push(obj)));
   const calcOffersPrice = () => {
     let offersPointPrice = 0;
     points.forEach((point) =>
       point.offers.forEach((offerElem) => {
         if (point.offers.length > 0){
-          offersPointPrice += pointsModel.findOffersByType(point.type).offers.find((offer) => offer.id === offerElem).price;
+          offersPointPrice += acc.find((offer) => offer.id === offerElem).price;
         }
       })
     );
@@ -36,29 +38,33 @@ const createSiteMenuTemplate = (points, pointsModel) => {
     return str;
   };
 
-  return ( `<section class="trip-main__trip-info  trip-info">
-  <div class="trip-info__main">
-    <h1 class="trip-info__title">${getDestinationString(points)}</h1>
-    <p class="trip-info__dates">${dateString(start, finish)}</p>
-  </div>
-  <p class="trip-info__cost">
-    Total: &euro;&nbsp;<span class="trip-info__cost-value">${fullTripCost}</span>
-  </p>
-</section>`);
+  return (
+    `<section class="trip-main__trip-info  trip-info">
+       <div class="trip-info__main">
+         <h1 class="trip-info__title">
+           ${getDestinationString(points)}
+         </h1>
+         <p class="trip-info__dates">
+           ${dateString(start, finish)}
+         </p>
+       </div>
+       <p class="trip-info__cost">
+         Total: &euro;&nbsp;<span class="trip-info__cost-value">
+         ${fullTripCost}
+         </span>
+       </p>
+    </section>`);
 };
 
-export default class SiteMenuView extends AbstractView {
-
+export default class SiteMenuView extends AbstractPointView {
   #points;
-  #pointsModel = null;
 
-  constructor(points, pointsModel) {
-    super();
+  constructor(points, {offers, destinations}) {
+    super({offers, destinations});
     this.#points = points;
-    this.#pointsModel = pointsModel;
   }
 
   get template() {
-    return createSiteMenuTemplate(this.#points, this.#pointsModel);
+    return createSiteMenuTemplate(this.#points,this.offers, this.destinations);
   }
 }

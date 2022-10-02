@@ -4,11 +4,17 @@ import LoadingView from '../view/loading-view.js';
 import PointsListView from '../view/points-list-view.js';
 import {render, RenderPosition, remove} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
-import { sortByPrice, sortByTime, sortByDay } from '../mock/sort.js';
-import { FILTER_TYPE, SortData, SortType, UpdateType, UserAction } from '../mock/const.js';
-import { filter } from '../mock/filter.js';
+import { sortByPrice, sortByTime, sortByDay} from '../utils/sort.js';
+import { FILTER_TYPE, SortData, SortType, UpdateType, UserAction } from '../utils/const.js';
+import { filter } from '../utils/filter.js';
 import PointNewPresenter from './point-new-presenter.js';
 import SiteMenuView from '../view/site-menu-view .js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 const pageMain = document.querySelector('.page-main');
 const tripEventsContainer = pageMain.querySelector('.trip-events');
@@ -21,7 +27,7 @@ export default class RoutePresenter {
   #filterModel = null;
   #menuComponent = null;
   #headerContainer = null;
-  #pointPresenter = new Map();
+  #pointPresenterMap = new Map();
   #pointNewPresenter = null;
   #tripList = new PointsListView();
   #loadingComponent = new LoadingView();
@@ -29,13 +35,14 @@ export default class RoutePresenter {
   #currentSortType = SortData[0].id;
   #filterType = FILTER_TYPE.EVERYTHING;
   #isLoading = true;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   init = (headerMain, pointsContainer, pointsModel, filterModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#headerContainer = headerMain;
-    this.#pointNewPresenter = new PointNewPresenter(this.#tripList.element, this.#handleViewAction);
+    this.#pointNewPresenter = new PointNewPresenter(this.#tripList.element, this.#handleViewAction, this.#pointsModel);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -70,18 +77,35 @@ export default class RoutePresenter {
     this.#pointNewPresenter.init(callback);
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, update);
+        this.#pointPresenterMap.get(update.id).setSaving();
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenterMap.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.addPoint(updateType, update);
+        this.#pointNewPresenter.setSaving();
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch (err) {
+          this.#pointNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.deletePoint(updateType, update);
+        this.#pointPresenterMap.get(update.id).setDeleting();
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenterMap.get(update.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #renderSort = () => {
@@ -91,14 +115,17 @@ export default class RoutePresenter {
   };
 
   #renderSiteMenu = () => {
-    this.#menuComponent = new SiteMenuView(this.points, this.#pointsModel);
+    this.#menuComponent = new SiteMenuView(this.points, {
+      offers: this.#pointsModel.offers,
+      destinations: this.#pointsModel.destinations
+    });
     render(this.#menuComponent, this.#headerContainer, RenderPosition.AFTERBEGIN);
   };
 
   #clearRoute = ({resetSortType = false} = {}) => {
     this.#pointNewPresenter.destroy();
-    this.#pointPresenter.forEach((presenter) => presenter.destroy());
-    this.#pointPresenter.clear();
+    this.#pointPresenterMap.forEach((presenter) => presenter.destroy());
+    this.#pointPresenterMap.clear();
 
     remove(this.#sortComponent);
     remove(this.#loadingComponent);
@@ -116,7 +143,7 @@ export default class RoutePresenter {
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#tripList.element, this.#handleViewAction, this.#handleModeChange, this.#pointsModel);
     pointPresenter.init(point);
-    this.#pointPresenter.set(point.id, pointPresenter);
+    this.#pointPresenterMap.set(point.id, pointPresenter);
   };
 
   #renderPoints = () => {
@@ -156,7 +183,7 @@ export default class RoutePresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data);
+        this.#pointPresenterMap.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
         this.#clearRoute();
@@ -176,7 +203,7 @@ export default class RoutePresenter {
 
   #handleModeChange = () => {
     this.#pointNewPresenter.destroy();
-    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+    this.#pointPresenterMap.forEach((presenter) => presenter.resetView());
   };
 
   #handleSortTypeChange = (sortType) => {

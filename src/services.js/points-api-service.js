@@ -1,8 +1,10 @@
-import ApiService from './framework/api-service.js';
+import ApiService from '../framework/api-service.js';
 
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };
 
 export default class PointsApiService extends ApiService {
@@ -29,9 +31,27 @@ export default class PointsApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
+    return await ApiService.parseResponse(response);
+  };
 
-    return parsedResponse;
+  addPoint = async (point) => {
+    const response = await this._load({
+      url: 'points',
+      method: Method.POST,
+      body: JSON.stringify(this.#adaptToServer(point)),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    });
+
+    return await ApiService.parseResponse(response);
+  };
+
+  deletePoint = async (point) => {
+    const response = await this._load({
+      url: `points/${point.id}`,
+      method: Method.DELETE,
+    });
+
+    return response;
   };
 
   #adaptToServer = (point) => {
@@ -44,7 +64,6 @@ export default class PointsApiService extends ApiService {
       'is_favorite': point.isFavorite,
     };
 
-    // Ненужные ключи мы удаляем
     delete adaptedPoint.isFavorite;
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dates;
