@@ -24,18 +24,14 @@ const createSiteMenuTemplate = (points, types) => {
     return offersPointPrice;
   };
   const fullTripCost = pointsCost + calcOffersPrice();
+
   const getDestinationString = () => {
-    let str = '';
-    if (points.length > 3) {
-      str = `${points[0].destination.name} &mdash; . . . &mdash; ${points[points.length - 1].destination.name}`;
-    } else if (points.length === 3) {
-      str = `${points[0].destination.name} &mdash; ${points[1].destination.name} &mdash; ${points[2].destination.name}`;
-    } else if (points.length === 2) {
-      str = `${points[0].destination.name} &mdash; ${points[1].destination.name}`;
-    } else if (points.length === 1) {
-      str = `${points[0].destination.name}`;
+    const destinations = points.map(({destination:{name}}) => name);
+    if (points.length > 3){
+      destinations[1] = '...';
+      destinations.splice(2, destinations.length - 3);
     }
-    return str;
+    return destinations.join(' &mdash; ');
   };
 
   return (
