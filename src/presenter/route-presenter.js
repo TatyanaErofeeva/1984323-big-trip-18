@@ -215,6 +215,10 @@ export default class RoutePresenter {
     this.#clearRoute();
     this.#renderRoute();
   };
+
+  removeLoading = () => {
+    remove(this.#loadingComponent);
+  };
 }
 
 

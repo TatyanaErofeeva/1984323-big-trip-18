@@ -325,6 +325,20 @@ main {
   .trip-events__msg--hidden {
     display: none; }
 
+  .trip-events__err {
+    margin: 0;
+    margin-top: 280px;
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 60px;
+    text-align: center;
+    color: red;
+    opacity: 0.89; }
+    .trip-events__msg--hidden {
+      display: none; }
+
+
+
 .trip-events__list {
   padding: 0;
   margin: 0;
