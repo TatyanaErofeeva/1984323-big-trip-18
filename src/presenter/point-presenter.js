@@ -155,8 +155,8 @@ export default class PointPresenter {
 
   #formSubmitHandler = (update) => {
     const isMinorUpdate = this.#point.destination.name !== update.destination.name ||
-    this.#point.dates.start !== update.dates.start ||
-    this.#point.dates.finish !== update.dates.finish ||
+    this.#point.dateFrom !== update.dateFrom ||
+    this.#point.dateTo !== update.dateTo ||
     this.#point.basePrice !== update.basePrice ||
     this.#point.offers.length !== update.offers.length ||
     !this.#point.offers.every((id) => update.offers.includes[id]);

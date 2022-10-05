@@ -4,8 +4,8 @@ import { dateString } from '../utils/date.js';
 const createSiteMenuTemplate = (points, types) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
-  const start = firstPoint.dates.start;
-  const finish = lastPoint.dates.start;
+  const dateFrom = firstPoint.dateFrom;
+  const dateTo = lastPoint.dateFrom;
   const pointsCost = points.reduce((prev, current) => prev + current.basePrice, 0);
   const acc = [];
   types.map(({offers}) => offers)
@@ -41,7 +41,7 @@ const createSiteMenuTemplate = (points, types) => {
            ${getDestinationString(points)}
          </h1>
          <p class="trip-info__dates">
-           ${dateString(start, finish)}
+           ${dateString(dateFrom, dateTo)}
          </p>
        </div>
        <p class="trip-info__cost">

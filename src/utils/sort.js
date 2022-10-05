@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 
-export const sortByDay = (pointA, pointB ) => dayjs(pointA.dates.start).diff(pointB.dates.start);
+export const sortByDay = (pointA, pointB ) => dayjs(pointA.dateFrom).diff(pointB.dateFrom);
 
 export const sortByTime = (timeA, timeB) => {
-  const timeADuration = dayjs(timeA.dates.finish).diff(dayjs(timeA.dates.start));
-  const timeBDuration = dayjs(timeB.dates.finish).diff(dayjs(timeB.dates.start));
+  const timeADuration = dayjs(timeA.dateTo).diff(dayjs(timeA.dateFrom));
+  const timeBDuration = dayjs(timeB.dateTo).diff(dayjs(timeB.dateFrom));
   return timeBDuration - timeADuration;
 };
 

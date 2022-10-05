@@ -97,10 +97,8 @@ export default class PointsModel extends Observable {
     const adaptedPoint = {
       ...point,
       basePrice: point.base_price,
-      dates: {
-        start: point.date_from !== null ? new Date(point.date_from) : point.date_from,
-        finish: point.date_to !== null ? new Date(point.date_to) : point.date_to,
-      },
+      dateFrom: point.date_from !== null ? new Date(point.date_from) : point.date_from,
+      dateTo: point.date_to !== null ? new Date(point.date_to) : point.date_to,
       destination: this.destinations.find((destination) => destination.id === point.destination),
       isFavorite: point.is_favorite
     };

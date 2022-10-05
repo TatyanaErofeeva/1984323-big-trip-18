@@ -40,7 +40,7 @@ const generateOffersList = (offers, _state, isDisabled) => {
      `;
 };
 
-const generateTimeData = (start, finish) =>
+const generateTimeData = (dateFrom, dateTo) =>
   `<div class="event__field-group  event__field-group--time">
      <label class="visually-hidden" for="event-start-time-1">
        From
@@ -50,7 +50,7 @@ const generateTimeData = (start, finish) =>
        id="event-start-time-1"
        type="text"
        name="event-start-time"
-       value="${start ? formatToDateWithTime(start) : ''}"
+       value="${dateFrom ? formatToDateWithTime(dateFrom) : ''}"
        required
      >
      &mdash;
@@ -59,7 +59,7 @@ const generateTimeData = (start, finish) =>
        id="event-end-time-1"
        type="text"
        name="event-end-time"
-       value="${finish ? formatToDateWithTime(finish) : ''}"
+       value="${dateTo ? formatToDateWithTime(dateTo) : ''}"
        required
      >
    </div>`;
@@ -109,8 +109,8 @@ const generatePhoto = (photosList) => photosList
   .map((element) => `<img class="event__photo" src=${element.src} alt="Event photo">`).join('');
 
 const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
-  const { id, dates, destination, basePrice, isDisabled, isSaving, isDeleting, } = _state;
-  const {start, finish} = dates;
+  const { id, dateFrom, dateTo, destination, basePrice, isDisabled, isSaving, isDeleting, } = _state;
+  //const {start, finish} = dates;
   const directions = destinations.map((dest) => dest.name);
   const newPointList = directions.filter((element) => element !== destination.name);
 
@@ -143,7 +143,7 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
              ${generateDistDatalist(newPointList)}
            </datalist>
         </div>
-        ${generateTimeData(start, finish, id)}
+        ${generateTimeData(dateFrom, dateTo, id)}
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-${id}">
              <span class="visually-hidden">Price</span>
@@ -333,19 +333,13 @@ export default class EditFormView extends AbstractPointView {
 
   #startDateChangeHandler = ([userDate]) => {
     this.updateElement({
-      dates: {
-        ...this._state.dates,
-        start: userDate,
-      }
+      dateFrom: userDate,
     });
   };
 
   #endDateChangeHandler = ([userDate]) => {
     this.updateElement({
-      dates: {
-        ...this._state.dates,
-        finish: userDate,
-      }
+      dateTo: userDate,
     });
   };
 
@@ -355,9 +349,9 @@ export default class EditFormView extends AbstractPointView {
       {
         enableTime: true,
         'time_24hr': true,
-        maxDate: this._state.dates.finish,
+        maxDate: this._state.dateTo,
         allowInput: true,
-        defaultDate: this._state.dates.start,
+        defaultDate: this._state.dateFrom,
         onChange: this.#startDateChangeHandler,
       }
     );
@@ -369,9 +363,9 @@ export default class EditFormView extends AbstractPointView {
       {
         enableTime: true,
         'time_24hr': true,
-        minDate: this._state.dates.start,
+        minDate: this._state.dateFrom,
         allowInput: true,
-        defaultDate: this._state.dates.finish,
+        defaultDate: this._state.dateTo,
         onChange: this.#endDateChangeHandler,
       }
     );

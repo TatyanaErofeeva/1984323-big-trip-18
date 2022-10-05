@@ -25,7 +25,7 @@ const formatToTime = (date) => dayjs(date).format('HH:mm');
 const formatToFullDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const formatToDateMonthsAndDay = (date) => dayjs(date).format('MMM-DD');
 
-const dateString = (start, finish) => (dayjs(start).format('MMM') === dayjs(finish).format('MMM')) ? `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD')}` : `${dayjs(start).format('DD MMM')} &mdash; ${dayjs(finish).format('DD MMM')}`;
+const dateString = (dateFrom, dateTo) => (dayjs(dateFrom).format('MMM') === dayjs(dateTo).format('MMM')) ? `${dayjs(dateFrom).format('DD MMM')} &mdash; ${dayjs(dateTo).format('DD')}` : `${dayjs(dateFrom).format('DD MMM')} &mdash; ${dayjs(dateTo).format('DD MMM')}`;
 
 
 export{getDateDiff, dateString, isFutureDate, isPastDate, formatToDateMonthsAndDay, formatToDateWithTime, formatToFullDate, formatToTime};

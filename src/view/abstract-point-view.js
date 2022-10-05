@@ -2,10 +2,8 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 const BLANK_POINT = {
   basePrice: null,
-  dates: {
-    start: new Date(),
-    finish: '',
-  },
+  dateFrom: new Date(),
+  dateTo: '',
   destination : {
     id: null,
     description: '',

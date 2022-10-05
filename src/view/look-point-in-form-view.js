@@ -18,40 +18,40 @@ const generateOffersListForPoint = (offers, point) => {
 };
 
 const createNewPointTemplate = (point, offers, destinations, selectedType) => {
-  const {dates,type, destination, isFavorite, basePrice} = point;
-  const {start, finish} = dates;
+  const {dateFrom, dateTo, type, destination, isFavorite, basePrice} = point;
+  //const {start, finish} = dates;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
   return (
     `<li class="trip-events__item">
        <div class="event">
-         <time class="event__date" 
-           datetime="${formatToFullDate(start)}">
-           ${formatToDateMonthsAndDay(start)}
+         <time class="event__date"
+           datetime="${formatToFullDate(dateFrom)}">
+           ${formatToDateMonthsAndDay(dateFrom)}
          </time>
          <div class="event__type">
-            <img 
-            class="event__type-icon" 
-            width="42" 
-            height="42" 
-            src="../img/icons/${point.type}.png" 
+            <img
+            class="event__type-icon"
+            width="42"
+            height="42"
+            src="../img/icons/${point.type}.png"
             alt="Event type icon">
          </div>
          <h3 class="event__title">${type} ${destination.name}</h3>
          <div class="event__schedule">
            <p class="event__time">
-             <time 
-              class="event__start-time" 
-              datetime="${dayjs(start)}">
-              ${formatToTime(start)}
+             <time
+              class="event__start-time"
+              datetime="${dayjs(dateFrom)}">
+              ${formatToTime(dateFrom)}
              </time>
              &mdash;
-             <time 
-              class="event__end-time" 
-              datetime="${dayjs(finish)}">
-              ${formatToTime(finish)}
+             <time
+              class="event__end-time"
+              datetime="${dayjs(dateTo)}">
+              ${formatToTime(dateTo)}
              </time>
            </p>
-           <p class="event__duration">${getDateDiff(dayjs(start), dayjs(finish))}</p>
+           <p class="event__duration">${getDateDiff(dayjs(dateFrom), dayjs(dateTo))}</p>
          </div>
          <p class="event__price">
            &euro;&nbsp;
