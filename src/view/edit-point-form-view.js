@@ -109,14 +109,15 @@ const generatePhoto = (photosList) => photosList
   .map((element) => `<img class="event__photo" src=${element.src} alt="Event photo">`).join('');
 
 const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
-  const { id, dateFrom, dateTo, destination, basePrice, isDisabled, isSaving, isDeleting, } = _state;
-  //const {start, finish} = dates;
+  const { id, dateFrom, dateTo, destination: destinationId, basePrice, isDisabled, isSaving, isDeleting, } = _state;
+  const getDestinationById = () => destinations.find((destination) => destination.id === _state.destination);
   const directions = destinations.map((dest) => dest.name);
-  const newPointList = directions.filter((element) => element !== destination.name);
+  const newPointList = directions.filter((element) => element !== getDestinationById().name);
+  //console.log(getDestinationById().name);
 
   const getDeleteCancelButtonCaption = () => {
     if (isDeleting) {return 'Deleting...';}
-    if (destination.id === null) {return 'Cancel';}
+    if (destinationId === null) {return 'Cancel';}
     return 'Delete';
   };
 
@@ -126,15 +127,15 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
          <header class="event__header">
          ${generateEventTypeList(offers, id, selectedType)}
          <div class="event__field-group  event__field-group--destination">
-           <label class="event__label  event__type-output" for="event-destination-${id}">
+           <label class="event__label  event__type-output" for="event-destination-${destinationId}">
              ${selectedType.type}
            </label>
            <input
              class="event__input  event__input--destination"
-             id="event-destination-${id}"
+             id="event-destination-${destinationId}"
              type="text"
             name="event-destination"
-             value="${destination.name ? he.encode(destination.name) : ''}"
+             value="${getDestinationById().name ? he.encode(getDestinationById().name) : ''}"
              list="destination-list-${id}"
              ${isDisabled ? 'disabled' : ''}
              required
@@ -172,22 +173,23 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
           ${isDisabled ? 'disabled' : ''}>
           ${getDeleteCancelButtonCaption()}
         </button>
-        ${destination.id !== null ?
+        ${destinationId !== null ?
       `<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : '' }>
         <span class="visually-hidden">Open event</span>
        </button>` : ''}
      </header>
      <section class="event__details">
        ${generateOffersList(selectedType.offers, _state, isDisabled)}
-       ${(destination.description || destination.pictures.length) ?
+       ${(getDestinationById().description ||
+        getDestinationById().pictures.length) ?
       `<section class="event__section  event__section--destination">
          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-         ${destination.description ?
-      `<p class="event__destination-description">${destination.description}</p>` : '' }
-         ${destination.pictures.length > 0 ?
+         ${getDestinationById().description ?
+      `<p class="event__destination-description">${getDestinationById().description}</p>` : '' }
+         ${getDestinationById().pictures.length > 0 ?
       `<div class="event__photos-container">
          <div class="event__photos-tape">
-           ${generatePhoto(destination.pictures)}
+           ${generatePhoto(getDestinationById().pictures)}
          </div>
        </div>` : ''}
       </section>` : ''}
