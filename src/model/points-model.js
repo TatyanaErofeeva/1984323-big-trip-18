@@ -1,6 +1,6 @@
 import { UpdateType } from '../utils/const.js';
 import Observable from '../framework/observable.js';
-import { convertObjectToCamelCase } from '../utils/util.js';
+import { convertCamelToSnakeCase, convertSnakeToCamelCase, convertObjectKeys } from '../utils/util.js';
 
 export default class PointsModel extends Observable {
   #pointsApiService = null;
@@ -94,5 +94,5 @@ export default class PointsModel extends Observable {
     }
   };
 
-  #adaptToClient = (point) => convertObjectToCamelCase(point);
+  #adaptToClient = (point) => convertObjectKeys(point, convertSnakeToCamelCase);
 }

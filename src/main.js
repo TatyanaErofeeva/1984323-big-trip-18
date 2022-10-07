@@ -44,10 +44,10 @@ pointsModel.init()
   .then(() => {
     toggleNewEventButtonState(false);
   })
-  .catch(() => {
+  /*.catch(() => {
     render(newFailedLoadPoints, tripEvents, RenderPosition.AFTERBEGIN);
     boardPresenter.removeLoading();
-  })
+  })*/
   .finally(() => {
     render(newPointButtonComponent, headerMain);
     newPointButtonComponent.setClickHandler(disableNewEventButton);

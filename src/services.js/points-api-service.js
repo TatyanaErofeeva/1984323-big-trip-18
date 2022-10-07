@@ -1,4 +1,5 @@
 import ApiService from '../framework/api-service.js';
+import { convertCamelToSnakeCase, convertObjectKeys } from '../utils/util.js';
 
 const Method = {
   GET: 'GET',
@@ -54,21 +55,10 @@ export default class PointsApiService extends ApiService {
     return response;
   };
 
-  #adaptToServer = (point) => {
-    const adaptedPoint = {
-      ...point,
-      'base_price': Number(point.basePrice),
-      'date_from': new Date(point.dateFrom).toISOString(),
-      'date_to': new Date(point.dateTo).toISOString(),
-      'is_favorite': point.isFavorite,
-    };
-
-    delete adaptedPoint.isFavorite;
-    delete adaptedPoint.basePrice;
-    delete adaptedPoint.dateFrom;
-    delete adaptedPoint.dateTo;
-    delete adaptedPoint.pointsModel;
-
-    return adaptedPoint;
-  };
+  #adaptToServer = (point) => ({
+    ...convertObjectKeys(point, convertCamelToSnakeCase),
+    'base_price': Number(point.basePrice),
+    'date_from': new Date(point.dateFrom).toISOString(),
+    'date_to': new Date(point.dateTo).toISOString(),
+  });
 }
