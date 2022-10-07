@@ -1,5 +1,6 @@
 import { UpdateType } from '../utils/const.js';
 import Observable from '../framework/observable.js';
+import { convertObjectToCamelCase } from '../utils/util.js';
 
 export default class PointsModel extends Observable {
   #pointsApiService = null;
@@ -93,21 +94,5 @@ export default class PointsModel extends Observable {
     }
   };
 
-  #adaptToClient = (point) => {
-    const adaptedPoint = {
-      ...point,
-      basePrice: point.base_price,
-      dateFrom: point.date_from,
-      dateTo: point.date_to,
-      //destination: this.destinations.find((destination) => destination.id === point.destination),
-      isFavorite: point.is_favorite
-    };
-
-    delete adaptedPoint.base_price;
-    delete adaptedPoint.date_from;
-    delete adaptedPoint.date_to;
-    delete adaptedPoint.is_favorite;
-    //console.log({adaptedPoint});
-    return adaptedPoint;
-  };
+  #adaptToClient = (point) => convertObjectToCamelCase(point);
 }

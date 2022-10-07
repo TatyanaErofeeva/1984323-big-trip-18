@@ -1,7 +1,7 @@
 import AbstractPointView from './abstract-point-view.js';
 import { dateString } from '../utils/date.js';
 
-const createSiteMenuTemplate = (points, types) => {
+const createSiteMenuTemplate = (points, types, destinations) => {
   const firstPoint = points[0];
   const lastPoint = points[points.length - 1];
   const dateFrom = firstPoint.dateFrom;
@@ -26,12 +26,13 @@ const createSiteMenuTemplate = (points, types) => {
   const fullTripCost = pointsCost + calcOffersPrice();
 
   const getDestinationString = () => {
-    const destinations = points.map(({destination:{name}}) => name);
+    const destinationNames = points.map(({destination}) => destinations.find((d) => destination === d.id).name);
+
     if (points.length > 3){
-      destinations[1] = '...';
-      destinations.splice(2, destinations.length - 3);
+      destinationNames[1] = '...';
+      destinationNames.splice(2, destinationNames.length - 3);
     }
-    return destinations.join(' &mdash; ');
+    return destinationNames.join(' &mdash; ');
   };
 
   return (

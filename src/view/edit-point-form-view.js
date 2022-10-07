@@ -109,15 +109,14 @@ const generatePhoto = (photosList) => photosList
   .map((element) => `<img class="event__photo" src=${element.src} alt="Event photo">`).join('');
 
 const createEditTemplate = (_state = {}, offers, destinations, selectedType) => {
-  const { id, dateFrom, dateTo, destination: destinationId, basePrice, isDisabled, isSaving, isDeleting, } = _state;
-  const getDestinationById = () => destinations.find((destination) => destination.id === _state.destination);
+  const { id, dateFrom, dateTo, basePrice, isDisabled, isSaving, isDeleting, } = _state;
+  const selectedDestination = destinations.find((destination) => destination.id === _state.destination);
   const directions = destinations.map((dest) => dest.name);
-  const newPointList = directions.filter((element) => element !== getDestinationById().name);
-  //console.log(getDestinationById().name);
+  const newPointList = directions.filter((element) => element !== selectedDestination.name);
 
   const getDeleteCancelButtonCaption = () => {
     if (isDeleting) {return 'Deleting...';}
-    if (destinationId === null) {return 'Cancel';}
+    if (selectedDestination.id === null) {return 'Cancel';}
     return 'Delete';
   };
 
@@ -127,15 +126,15 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
          <header class="event__header">
          ${generateEventTypeList(offers, id, selectedType)}
          <div class="event__field-group  event__field-group--destination">
-           <label class="event__label  event__type-output" for="event-destination-${destinationId}">
+           <label class="event__label  event__type-output" for="event-destination-${id}">
              ${selectedType.type}
            </label>
            <input
              class="event__input  event__input--destination"
-             id="event-destination-${destinationId}"
+             id="event-destination-${id}"
              type="text"
             name="event-destination"
-             value="${getDestinationById().name ? he.encode(getDestinationById().name) : ''}"
+             value="${selectedDestination.name ? he.encode(selectedDestination.name) : ''}"
              list="destination-list-${id}"
              ${isDisabled ? 'disabled' : ''}
              required
@@ -173,23 +172,23 @@ const createEditTemplate = (_state = {}, offers, destinations, selectedType) => 
           ${isDisabled ? 'disabled' : ''}>
           ${getDeleteCancelButtonCaption()}
         </button>
-        ${destinationId !== null ?
+        ${selectedDestination.id !== null ?
       `<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : '' }>
         <span class="visually-hidden">Open event</span>
        </button>` : ''}
      </header>
      <section class="event__details">
        ${generateOffersList(selectedType.offers, _state, isDisabled)}
-       ${(getDestinationById().description ||
-        getDestinationById().pictures.length) ?
+       ${(selectedDestination.description ||
+        selectedDestination.pictures.length) ?
       `<section class="event__section  event__section--destination">
          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-         ${getDestinationById().description ?
-      `<p class="event__destination-description">${getDestinationById().description}</p>` : '' }
-         ${getDestinationById().pictures.length > 0 ?
+         ${selectedDestination.description ?
+      `<p class="event__destination-description">${selectedDestination.description}</p>` : '' }
+         ${selectedDestination.pictures.length > 0 ?
       `<div class="event__photos-container">
          <div class="event__photos-tape">
-           ${generatePhoto(getDestinationById().pictures)}
+           ${generatePhoto(selectedDestination.pictures)}
          </div>
        </div>` : ''}
       </section>` : ''}
@@ -280,7 +279,7 @@ export default class EditFormView extends AbstractPointView {
   #changeDestination = (evt) => {
     evt.preventDefault();
     if (evt.target.value) {
-      const destination = this.destinations.find((element) => element.name === evt.target.value) || BLANK_POINT.destination;
+      const destination = this.destinations.find((element) => element.name === evt.target.value).id || BLANK_POINT.destination;
       this.updateElement({
         destination,
       });
